@@ -1,7 +1,7 @@
-iOS-App-Beta-Test-Settings
+iOS App Beta Test Settings
 ==========================
 
-Easy accesible in-app settings for testing.
+Easy accesible in-app settings for testing. Shake to show settings-pane.
 
 ## Currently planned plugins
 
