@@ -30,7 +30,7 @@ Easy accesible in-app settings for testing. Shake to show settings-pane.
     
 ### 3. Shake to show settings panel
 
-![alt tag](https://github.com/duemunk/iOS-App-Beta-Test-Settings/blob/master/Screenshots/SettingsPanel.png)
+![Settings panel opens on device shake](Screenshots/SettingsPanel.png)
 
 ## Working plugins
 
