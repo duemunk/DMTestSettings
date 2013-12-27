@@ -7,22 +7,26 @@ Easy accesible in-app settings for testing. Shake to show settings-pane.
 
 ### 1. Import to project with wanted plugins
 
-    #import "DMTestSettings.h"
-    #import "DMGridOverlayPlugin.h"
+```objective-c
+#import "DMTestSettings.h"
+#import "DMGridOverlayPlugin.h"
+```
 
 ### 2. Add to app launch
 
-    - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-    {
-      ...
-      
-  	  self.window.rootViewController = ...;
-  	
-  	  // Start DMTestSettings _after_ setting rootViewController 
-  	  [DMTestSettings startWithPlugins:@[[DMGridOverlayPlugin new]]];
-  	
-      return YES;
-    }
+```objective-c
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+  ...
+  
+    self.window.rootViewController = ...;
+  
+    // Start DMTestSettings _after_ setting rootViewController 
+    [DMTestSettings startWithPlugins:@[[DMGridOverlayPlugin new]]];
+  
+  return YES;
+}
+```
     
 ### 3. Shake to show settins panel
 
