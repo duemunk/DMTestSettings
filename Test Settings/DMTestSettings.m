@@ -262,7 +262,7 @@
 		
 		view.tintColor = [UIColor magentaColor];
 		
-		self.viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Luk" style:UIBarButtonItemStyleBordered target:self action:@selector(hide)];
+		self.viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleBordered target:self action:@selector(hide)];
 		
 		self.hidden = YES;
 	}

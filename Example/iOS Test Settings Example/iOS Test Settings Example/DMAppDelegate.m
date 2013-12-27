@@ -27,7 +27,7 @@
 	[label sizeToFit];
 	label.center = self.window.center;
 	
-    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.backgroundColor = [UIColor cyanColor];
     [self.window makeKeyAndVisible];
 	
 	// Start DMTestSettings _after_ setting rootViewController 
