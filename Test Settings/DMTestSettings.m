@@ -155,23 +155,29 @@
 
 
 
-
-
-@interface DMTableViewCell : UITableViewCell
-
+@implementation DMTableViewCell_StyleSubtitle
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+	self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
+	return self;
+}
 @end
 
-@implementation DMTableViewCell
-
+@implementation DMTableViewCell_StyleValue1
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
 	self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier];
 	return self;
 }
-
-
 @end
 
+@implementation DMTableViewCell_StyleValue2
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+	self = [super initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:reuseIdentifier];
+	return self;
+}
+@end
 
 
 
@@ -235,7 +241,7 @@
 		UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		tableView.delegate = self;
 		tableView.dataSource = self;
-		[tableView registerClass:[DMTableViewCell class] forCellReuseIdentifier:cellIdentifier];
+		[tableView registerClass:[DMTableViewCell_StyleSubtitle class] forCellReuseIdentifier:cellIdentifier];
 		self.viewController.tableView = tableView;
 		
 		self.navigationController = [[DMNavigationController alloc] initWithRootViewController:self.viewController];

@@ -8,6 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+@interface DMTableViewCell_StyleSubtitle : UITableViewCell @end
+@interface DMTableViewCell_StyleValue1 : UITableViewCell @end
+@interface DMTableViewCell_StyleValue2 : UITableViewCell @end
+
+
+
 @interface DMTestSettings : NSObject
 
 @property (nonatomic, assign) BOOL hidden;
@@ -20,3 +26,6 @@
 - (id)objectForKey:(NSString *)key withPluginIdentifier:(NSString *)pluginID;
 
 @end
+
+
+
