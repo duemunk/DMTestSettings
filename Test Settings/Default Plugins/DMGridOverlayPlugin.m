@@ -103,8 +103,6 @@
 #define kLineWidth @"kLineWidth"
 #define kLineColor @"kLineColor"
 
-#define defaults
-
 - (void)setup
 {
 	self.name = @"Grid Overlay";
