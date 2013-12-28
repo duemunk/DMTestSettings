@@ -381,6 +381,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+	cell.detailTextLabel.textColor = [UIColor grayColor];
 	
 	DMTestSettingsPlugin *plugin = [self pluginForRow:indexPath.row];
 	NSAssert(plugin.name.length > 0, @"Plugin doesn't have name: Class %@",[plugin class]);
