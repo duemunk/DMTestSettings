@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4E92695A186EEAA4007FC42F /* DMColorBlindPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E926959186EEAA4007FC42F /* DMColorBlindPlugin.m */; };
 		4EB49AEB186DAE2800B953E6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EB49AEA186DAE2800B953E6 /* Foundation.framework */; };
 		4EB49AED186DAE2800B953E6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EB49AEC186DAE2800B953E6 /* CoreGraphics.framework */; };
 		4EB49AEF186DAE2800B953E6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EB49AEE186DAE2800B953E6 /* UIKit.framework */; };
@@ -35,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4E926958186EEAA4007FC42F /* DMColorBlindPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMColorBlindPlugin.h; sourceTree = "<group>"; };
+		4E926959186EEAA4007FC42F /* DMColorBlindPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DMColorBlindPlugin.m; sourceTree = "<group>"; };
 		4EB49AE7186DAE2800B953E6 /* iOS Test Settings Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Test Settings Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EB49AEA186DAE2800B953E6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4EB49AEC186DAE2800B953E6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -83,6 +86,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4E92695E186EFAE5007FC42F /* ColorBlind */ = {
+			isa = PBXGroup;
+			children = (
+				4E926958186EEAA4007FC42F /* DMColorBlindPlugin.h */,
+				4E926959186EEAA4007FC42F /* DMColorBlindPlugin.m */,
+			);
+			name = ColorBlind;
+			sourceTree = "<group>";
+		};
+		4E92695F186EFAFD007FC42F /* GridOverlay */ = {
+			isa = PBXGroup;
+			children = (
+				4EB49B31186DE19C00B953E6 /* DMGridOverlayPlugin.h */,
+				4EB49B32186DE19C00B953E6 /* DMGridOverlayPlugin.m */,
+			);
+			name = GridOverlay;
+			sourceTree = "<group>";
+		};
 		4EB49ADE186DAE2800B953E6 = {
 			isa = PBXGroup;
 			children = (
@@ -170,8 +191,8 @@
 		4EB49B30186DD31F00B953E6 /* Default Plugins */ = {
 			isa = PBXGroup;
 			children = (
-				4EB49B31186DE19C00B953E6 /* DMGridOverlayPlugin.h */,
-				4EB49B32186DE19C00B953E6 /* DMGridOverlayPlugin.m */,
+				4E92695E186EFAE5007FC42F /* ColorBlind */,
+				4E92695F186EFAFD007FC42F /* GridOverlay */,
 			);
 			path = "Default Plugins";
 			sourceTree = "<group>";
@@ -275,6 +296,7 @@
 				4EB49AF7186DAE2800B953E6 /* main.m in Sources */,
 				4EB49B33186DE19C00B953E6 /* DMGridOverlayPlugin.m in Sources */,
 				4EB49B36186DFC0900B953E6 /* DMTestSettingsPlugin.m in Sources */,
+				4E92695A186EEAA4007FC42F /* DMColorBlindPlugin.m in Sources */,
 				4EB49AFB186DAE2800B953E6 /* DMAppDelegate.m in Sources */,
 				4EB49B2E186DD11900B953E6 /* DMTestSettings.m in Sources */,
 			);
@@ -479,6 +501,7 @@
 				4EB49B15186DAE2800B953E6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4EB49B16186DAE2800B953E6 /* Build configuration list for PBXNativeTarget "iOS Test Settings ExampleTests" */ = {
 			isa = XCConfigurationList;
@@ -487,6 +510,7 @@
 				4EB49B18186DAE2800B953E6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

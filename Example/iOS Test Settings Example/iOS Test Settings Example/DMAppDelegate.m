@@ -10,6 +10,7 @@
 
 #import "DMTestSettings.h"
 #import "DMGridOverlayPlugin.h"
+#import "DMColorBlindPlugin.h"
 
 
 @implementation DMAppDelegate
@@ -31,9 +32,9 @@
     [self.window makeKeyAndVisible];
 	
 	// Start DMTestSettings _after_ setting rootViewController 
-	[DMTestSettings startWithPlugins:@[[DMGridOverlayPlugin new]]];
+	[DMTestSettings startWithPlugins:@[[DMGridOverlayPlugin new],[DMColorBlindPlugin new]]];
 	
-//	[DMTestSettings sharedInstance].hidden = NO;
+	[DMTestSettings sharedInstance].hidden = NO;
 	
     return YES;
 }
