@@ -22,7 +22,7 @@
 @end
 
 @implementation DMNavigationController
-- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event
+- (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
     if (event.subtype == UIEventSubtypeMotionShake) {
 		if ([self.delegateShake respondsToSelector:@selector(didShake)])
