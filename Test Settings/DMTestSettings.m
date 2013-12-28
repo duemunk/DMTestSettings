@@ -278,7 +278,8 @@
 
 
 
-
+#import "DMGridOverlayPlugin.h"
+#import "DMColorBlindPlugin.h"
 
 @implementation DMTestSettings
 
@@ -291,7 +292,11 @@
 }
 + (DMTestSettings *)startWithPlugins:(NSArray *)plugins
 {
+	// General settings
 	[[DMTestSettings sharedInstance] addPlugin:[DMGeneralSettings new]];
+	// Default plugins
+	[[DMTestSettings sharedInstance] addPlugin:[DMGridOverlayPlugin new]];
+	[[DMTestSettings sharedInstance] addPlugin:[DMColorBlindPlugin new]];
 	for (DMTestSettingsPlugin *plugin in plugins) {
 		[[DMTestSettings sharedInstance] addPlugin:plugin];
 	}
