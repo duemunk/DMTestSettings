@@ -234,7 +234,7 @@
 	self = [super init];
 	if (self)
 	{
-		UIWindow *window = [UIApplication sharedApplication].windows.firstObject;
+		UIWindow *window = [UIApplication sharedApplication].keyWindow;
 		UIViewController *rootViewController = window.rootViewController;
 		
 		self.viewController = [UITableViewController new];
