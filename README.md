@@ -1,7 +1,7 @@
 iOS App Beta Test Settings
 ==========================
 
-Easy accesible in-app settings for testing. Shake to show settings-pane.
+Easy accesible in-app settings for testing. Shake to show settings-panel.
 
 ## Use 
 
@@ -15,14 +15,13 @@ Easy accesible in-app settings for testing. Shake to show settings-pane.
 ### 2. Add to app launch
 
 ```objective-c
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)application:didFinishLaunchingWithOptions:
 {
   ...
+  self.window.rootViewController = ...;
   
-    self.window.rootViewController = ...;
-  
-    // Start DMTestSettings _after_ setting rootViewController 
-    [DMTestSettings startWithPlugins:@[[DMGridOverlayPlugin new]]];
+  // Start DMTestSettings _after_ setting rootViewController 
+  [DMTestSettings startWithPlugins:@[[DMGridOverlayPlugin new]]];
   
   return YES;
 }
@@ -30,6 +29,7 @@ Easy accesible in-app settings for testing. Shake to show settings-pane.
     
 ### 3. Shake to show settings panel
 
+Or use ⌃⌘Z in iOS Simulator.
 ![Settings panel opens on device shake](Screenshots/SettingsPanel.png)
 
 ## Working plugins
@@ -37,11 +37,7 @@ Easy accesible in-app settings for testing. Shake to show settings-pane.
 ### Grid overlay
 Overlay point grid to check alignments of UI elements such as buttons and labels.
 
-
-## Currently planned plugins
-
 ### Color-blind test
-Color-grades the entire UI to simulate color-blind conditions
+Color-grades the entire UI to simulate color-blind conditions.
 
-
-### Change fonts and sizes
+See [here](https://github.com/duemunk/iOS-App-Beta-Test-Settings/wiki/Plugins) for more details on plugins.
