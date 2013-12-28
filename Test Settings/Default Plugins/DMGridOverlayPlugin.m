@@ -95,7 +95,7 @@
 @implementation DMGridOverlayPlugin
 
 
-#define cellIdentifier @"cellIdentifier"
+#define cellIdentifier @"GridOverlayCellIdentifier"
 
 
 #define kHorizontalSpacing @"kHorizontalSpacing"
