@@ -17,7 +17,7 @@ Easy accesible in-app settings for testing. Shake to show settings-pane.
 ```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  
+  ...
   self.window.rootViewController = ...;
   
   // Start DMTestSettings _after_ setting rootViewController 
