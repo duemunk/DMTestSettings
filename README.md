@@ -1,7 +1,7 @@
 iOS App Beta Test Settings
 ==========================
 
-Easy accesible in-app settings for testing. Shake to show settings-pane.
+Easy accesible in-app settings for testing. Shake to show settings-panel.
 
 ## Use 
 
@@ -29,6 +29,7 @@ Easy accesible in-app settings for testing. Shake to show settings-pane.
     
 ### 3. Shake to show settings panel
 
+Or use ctr+cmd+z in iOS Simulator.
 ![Settings panel opens on device shake](Screenshots/SettingsPanel.png)
 
 ## Working plugins
@@ -36,11 +37,5 @@ Easy accesible in-app settings for testing. Shake to show settings-pane.
 ### Grid overlay
 Overlay point grid to check alignments of UI elements such as buttons and labels.
 
-
-## Currently planned plugins
-
 ### Color-blind test
 Color-grades the entire UI to simulate color-blind conditions
-
-
-### Change fonts and sizes
