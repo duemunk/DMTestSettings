@@ -38,6 +38,6 @@ Or use ctr+cmd+z in iOS Simulator.
 Overlay point grid to check alignments of UI elements such as buttons and labels.
 
 ### Color-blind test
-Color-grades the entire UI to simulate color-blind conditions
+Color-grades the entire UI to simulate color-blind conditions.
 
-See https://github.com/duemunk/iOS-App-Beta-Test-Settings/wiki/Plugins
+See [here](https://github.com/duemunk/iOS-App-Beta-Test-Settings/wiki/Plugins) for more details on plugins.
