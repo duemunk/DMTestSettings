@@ -9,7 +9,6 @@ Easy accesible in-app settings for testing. Shake to show settings-panel.
 
 ```objective-c
 #import "DMTestSettings.h"
-#import "DMGridOverlayPlugin.h"
 ```
 
 ### 2. Add to app launch
@@ -21,7 +20,7 @@ Easy accesible in-app settings for testing. Shake to show settings-panel.
   self.window.rootViewController = ...;
   
   // Start DMTestSettings _after_ setting rootViewController 
-  [DMTestSettings startWithPlugins:@[[DMGridOverlayPlugin new]]];
+  [DMTestSettings start];
   
   return YES;
 }
@@ -29,8 +28,8 @@ Easy accesible in-app settings for testing. Shake to show settings-panel.
     
 ### 3. Shake to show settings panel
 
-Or use ⌃⌘Z in iOS Simulator.
 ![Settings panel opens on device shake](Screenshots/SettingsPanel.png)
+Or use ⌃⌘Z in iOS Simulator.
 
 ## Working plugins
 
