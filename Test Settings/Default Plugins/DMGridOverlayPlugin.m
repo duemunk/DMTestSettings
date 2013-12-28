@@ -56,17 +56,17 @@
 		// draw vertical lines
 		while (x < rect.origin.x + rect.size.width)
 		{
-			x += self.horizontalSpacing;
 			[topPath moveToPoint:CGPointMake(x, 0)];
 			[topPath addLineToPoint:CGPointMake(x, rect.origin.y + rect.size.height)];
+			x += self.horizontalSpacing;
 		}
 		
 		// draw horizontal lines
 		while (y < rect.origin.y + rect.size.height)
 		{
-			y += self.verticalSpacing;
 			[topPath moveToPoint:CGPointMake(0, y)];
 			[topPath addLineToPoint:CGPointMake(rect.origin.x + rect.size.width, y)];
+			y += self.verticalSpacing;
 		}
 		
 		[self.lineColor setStroke];
