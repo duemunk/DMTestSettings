@@ -12,6 +12,7 @@
 
 @property (nonatomic, assign) NSUInteger verticalSpacing, horizontalSpacing, lineWidth;
 @property (nonatomic, strong) UIColor *lineColor;
+@property (nonatomic, assign) float opacity;
 
 + (GridOverlay *)sharedInstance;
 
@@ -36,7 +37,6 @@
 	if (self)
 	{
 		self.windowLevel = UIWindowLevelStatusBar + 1.0f;
-		self.alpha = 0.2f;
 		self.frame = [UIScreen mainScreen].bounds;
 		
 		self.backgroundColor = [UIColor clearColor];
@@ -107,6 +107,14 @@
 		[self setNeedsDisplay];
 	}
 }
+- (void)setOpacity:(CGFloat)opacity
+{
+	if (opacity != _opacity) {
+		_opacity = opacity;
+		
+		self.alpha = 1 - _opacity;
+	}
+}
 
 @end
 
@@ -136,6 +144,7 @@
 #define kVerticalSpacing @"kVerticalSpacing"
 #define kLineWidth @"kLineWidth"
 #define kLineColor @"kLineColor"
+#define kOpacity @"kOpacity"
 
 - (void)setup
 {
@@ -144,7 +153,8 @@
 	self.parameterDefaults = @{kHorizontalSpacing	:	@(20),
 							   kVerticalSpacing		:	@(20),
 							   kLineWidth			:	@(2),
-							   kLineColor			:	[UIColor grayColor]};
+							   kLineColor			:	[UIColor grayColor],
+							   kOpacity				:	@(0.8f)};
 	
 	UITableViewController *tableViewController = [UITableViewController new];
 	_tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -172,6 +182,7 @@
 	[GridOverlay sharedInstance].horizontalSpacing = [[[DMTestSettings sharedInstance] objectForKey:kHorizontalSpacing withPluginIdentifier:self.uniqueID] floatValue];
 	[GridOverlay sharedInstance].lineColor = [[DMTestSettings sharedInstance] objectForKey:kLineColor withPluginIdentifier:self.uniqueID];
 	[GridOverlay sharedInstance].lineWidth = [[[DMTestSettings sharedInstance] objectForKey:kLineWidth withPluginIdentifier:self.uniqueID] floatValue];
+	[GridOverlay sharedInstance].opacity = [[[DMTestSettings sharedInstance] objectForKey:kOpacity withPluginIdentifier:self.uniqueID] floatValue];
 }
 
 
@@ -327,9 +338,32 @@
 					break;
 				case 1:
 				{
-					cell.accessoryView = nil;
+					cell.textLabel.text = @"Opacity";
 					
-					cell.textLabel.text = @"Color";
+					float opacity = [[[DMTestSettings sharedInstance] objectForKey:kOpacity withPluginIdentifier:self.uniqueID] floatValue];
+					cell.detailTextLabel.text = [NSString stringWithFormat:@"%.f %%",opacity*100];
+					[cell.detailTextLabel sizeToFit];
+					
+					cell.selectionStyle = UITableViewCellSelectionStyleNone;
+					
+					UIStepper *stepper;
+					if (cell.accessoryView.tag == stepperViewTag)
+					{
+						stepper = (UIStepper *)cell.accessoryView;
+						[stepper removeTarget:self action:NULL forControlEvents:UIControlEventValueChanged];
+					}
+					else
+					{
+						stepper = [UIStepper new];
+						stepper.tag = stepperViewTag;
+						stepper.minimumValue = 0.0f;
+						stepper.maximumValue = 1.0f;
+						stepper.stepValue = 0.05f;
+						cell.accessoryView = stepper;
+					}
+					stepper.value = opacity;
+					
+					[stepper addTarget:self action:@selector(opacityStepperChanged:) forControlEvents:UIControlEventValueChanged];
 				}
 					break;
 					
@@ -393,9 +427,28 @@
 	}
 	if (cell)
 	{
-		int spacing = stepper.value;
-		[[DMTestSettings sharedInstance] setObject:@(spacing) forKey:kLineWidth withPluginIdentifier:self.uniqueID];
-		[GridOverlay sharedInstance].lineWidth = spacing;
+		int lineWidth = stepper.value;
+		[[DMTestSettings sharedInstance] setObject:@(lineWidth) forKey:kLineWidth withPluginIdentifier:self.uniqueID];
+		[GridOverlay sharedInstance].lineWidth = lineWidth;
+		NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+		[self configureCell:cell forIndexPath:indexPath];
+	}
+}
+
+- (void)opacityStepperChanged:(UIStepper *)stepper
+{
+	UITableViewCell *cell;
+	if ([stepper.superview isKindOfClass:[UITableViewCell class]]) {
+		cell = (UITableViewCell *)stepper.superview;
+	}
+	else if ([stepper.superview.superview isKindOfClass:[UITableViewCell class]]) {
+		cell = (UITableViewCell *)stepper.superview.superview;
+	}
+	if (cell)
+	{
+		float opacity = stepper.value;
+		[[DMTestSettings sharedInstance] setObject:@(opacity) forKey:kOpacity withPluginIdentifier:self.uniqueID];
+		[GridOverlay sharedInstance].opacity = opacity;
 		NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
 		[self configureCell:cell forIndexPath:indexPath];
 	}
