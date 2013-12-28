@@ -57,13 +57,17 @@
 @implementation DMGeneralSettings
 
 #define kDisableAllPluginsOnReboot @"kDisableOnReboot"
+#define kEnableShakeToShow @"kEnableShakeToShow"
+#define kEnableTouchGestureToShow @"kEnableTouchGestureToShow"
 
 #define cellIdentifier @"GeneralSettingsCellIdentifier"
 - (void)setup
 {
 	self.uniqueID = @"GeneralSettings";
 	self.name = @"General";
-	self.parameterDefaults = @{kDisableAllPluginsOnReboot	:	@(NO)};
+	self.parameterDefaults = @{kDisableAllPluginsOnReboot	:	@(NO),
+							   kEnableShakeToShow			:	@(YES),
+							   kEnableTouchGestureToShow	:	@(NO)};
 	
 	UITableViewController *tableViewController = [UITableViewController new];
 	UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -75,17 +79,23 @@
 	tableViewController.tableView.delegate = self;
 }
 
+- (void)updateToNewSettings
+{
+	[self updateTouchGestureToShow];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 1;
+	return 2;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
 	switch (section) {
 		case 0: return @"";
+		case 1: return @"Toggle panel";
 		default: return nil;
 	}
 }
@@ -94,6 +104,7 @@
 {
 	switch (section) {
 		case 0: return 1;
+		case 1: return 2;
 		default: return 0;
 	}
 }
@@ -129,7 +140,29 @@
 			break;
 		case 1:
 		{
-			
+			switch (indexPath.row) {
+				case 0:
+				{
+					cell.textLabel.text = @"Shake";
+					UISwitch *_switch = [UISwitch new];
+					_switch.on = [[[DMTestSettings sharedInstance] objectForKey:kEnableShakeToShow withPluginIdentifier:self.uniqueID] boolValue];
+					[_switch addTarget:self action:@selector(switchEnableShakeToShowChanged:) forControlEvents:UIControlEventValueChanged];
+					cell.accessoryView = _switch;
+				}
+					break;
+				case 1:
+				{
+					cell.textLabel.text = @"Double tap with 2 fingers";
+					UISwitch *_switch = [UISwitch new];
+					_switch.on = [[[DMTestSettings sharedInstance] objectForKey:kEnableTouchGestureToShow withPluginIdentifier:self.uniqueID] boolValue];
+					[_switch addTarget:self action:@selector(switchEnableGestureToShowChanged:) forControlEvents:UIControlEventValueChanged];
+					cell.accessoryView = _switch;
+				}
+					break;
+					
+				default:
+					break;
+			}
 		}
 			break;
 			
@@ -144,6 +177,51 @@
 - (void)switchDisableAllPluginsOnRebootChanged:(UISwitch *)_switch
 {
 	[[DMTestSettings sharedInstance] setObject:@(_switch.on) forKey:kDisableAllPluginsOnReboot withPluginIdentifier:self.uniqueID];
+}
+- (void)switchEnableShakeToShowChanged:(UISwitch *)_switch
+{
+	BOOL enableShakeToShow = _switch.on;
+	[[DMTestSettings sharedInstance] setObject:@(enableShakeToShow) forKey:kEnableShakeToShow withPluginIdentifier:self.uniqueID];
+}
+- (void)switchEnableGestureToShowChanged:(UISwitch *)_switch
+{
+	BOOL enableTouchGestureToShow = _switch.on;
+	[[DMTestSettings sharedInstance] setObject:@(enableTouchGestureToShow) forKey:kEnableTouchGestureToShow withPluginIdentifier:self.uniqueID];
+	
+	[self updateTouchGestureToShow];
+}
+
+- (void)updateTouchGestureToShow
+{
+	BOOL enableTouchGestureToShow = [[[DMTestSettings sharedInstance] objectForKey:kEnableTouchGestureToShow withPluginIdentifier:self.uniqueID] boolValue];
+	
+	UIWindow *window = [UIApplication sharedApplication].keyWindow;
+	if (enableTouchGestureToShow)
+	{
+		UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchGesture:)];
+		tap.numberOfTapsRequired = 2;
+		tap.numberOfTouchesRequired = 2;
+		[window addGestureRecognizer:tap];
+	}
+	else
+	{
+		// Fint likely tap and remove
+		// TODO: remove "likely"
+		for (UIGestureRecognizer *gestureRecognizer in window.gestureRecognizers) {
+			if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+				UITapGestureRecognizer *tap = (UITapGestureRecognizer *)gestureRecognizer;
+				if (tap.numberOfTapsRequired == 2 && tap.numberOfTouchesRequired == 2)
+				{
+					[window removeGestureRecognizer:tap];
+				}
+			}
+		}
+	}
+}
+
+- (void)touchGesture:(UITapGestureRecognizer *)tap
+{
+	[DMTestSettings sharedInstance].hidden = ![DMTestSettings sharedInstance].hidden;
 }
 
 @end
@@ -355,7 +433,9 @@
 
 - (void)didShake
 {
-	self.hidden = !self.hidden;
+	if ([[[DMTestSettings sharedInstance] objectForKey:kEnableShakeToShow withPluginIdentifier:[DMGeneralSettings new].uniqueID] boolValue]) {
+		self.hidden = !self.hidden;
+	}
 }
 
 #pragma mark - UITableViewDataSource
