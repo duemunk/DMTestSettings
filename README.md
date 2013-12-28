@@ -15,7 +15,7 @@ Easy accesible in-app settings for testing. Shake to show settings-panel.
 ### 2. Add to app launch
 
 ```objective-c
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)application:didFinishLaunchingWithOptions:
 {
   ...
   self.window.rootViewController = ...;
