@@ -28,7 +28,9 @@ Easy accesible in-app settings for testing. Shake to show settings-panel.
     
 ### 3. Shake to show settings panel
 
+![Settings panel opens on device shake](Screenshots/ExampleApp.png)
 ![Settings panel opens on device shake](Screenshots/SettingsPanel.png)
+
 Or use ⌃⌘Z in iOS Simulator.
 
 ## Working plugins
