@@ -47,3 +47,44 @@ Overlay point grid to check alignments of UI elements such as buttons and labels
 Color-grades the entire UI to simulate color-blind conditions.
 
 See [here](https://github.com/duemunk/iOS-App-Beta-Test-Settings/wiki/Plugins) for more details on plugins.
+
+
+## Make your own plugins!
+
+Add your own plugins to the test suite. These might be app-specific or not. 
+
+```objective-c
+#import "DMTestSettingsPlugin.h"
+@interface DMGridOverlayPlugin : DMTestSettingsPlugin // Subclass DMTestSettingsPlugin
+@end
+
+@implementation DMGridOverlayPlugin
+#define kHorizontalSpacing @"kHorizontalSpacing" // Define keys for parameters
+
+- (void)setup
+{
+	self.name = @"Grid Overlay"; // Just a name :)
+	self.uniqueID = @"GridOverlay"; // Unique ID used for storing parameter values
+	self.parameterDefaults = @{kHorizontalSpacing	:	@(20), // Provide default values for parameters
+							   kVerticalSpacing		:	@(20),
+							   kLineWidth			:	@(2),
+							   kLineColor			:	[UIColor grayColor],
+							   kOpacity				:	@(0.8f)};
+	
+  // Set a view controller that acts as your control panel for the plugin.
+	self.viewController = ...
+}
+
+- (void)updateToNewSettings
+{
+  // use self.enabled to check if plugin should be active
+  // To get update to parameter values, use [[[DMTestSettings sharedInstance] objectForKey:kHorizontalSpacing withPluginIdentifier:self.uniqueID] floatValue];
+}
+```
+
+```objective-c
+// Setter for parameter values
+[[DMTestSettings sharedInstance] setObject:@(spacing) forKey:kHorizontalSpacing withPluginIdentifier:self.uniqueID];
+// Getter for parameter values
+[[[DMTestSettings sharedInstance] objectForKey:kHorizontalSpacing withPluginIdentifier:self.uniqueID] 
+```
