@@ -704,7 +704,7 @@ const NSUInteger defaultVisionDefectDimension = 32;
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
 	switch (section) {
-		case 0: return @"Color vision deficiency is simulated using color grading and blur. Lagging will occur when using this plugin, but this is not a part of the wanted effect.";
+		case 0: return @"Color vision deficiency is simulated using color grading and blur. Lagging will occur when using this plugin, but this is not a part of the wanted effect. \nWhen active, the status bar is removed.";
 		default: return nil;
 	}
 }
