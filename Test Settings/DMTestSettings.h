@@ -12,6 +12,7 @@
 @interface DMTableViewCell_StyleValue1 : UITableViewCell @end
 @interface DMTableViewCell_StyleValue2 : UITableViewCell @end
 
+@interface DMWindow : UIWindow @end
 
 
 @interface DMTestSettings : NSObject

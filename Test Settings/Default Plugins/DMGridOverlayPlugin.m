@@ -6,13 +6,15 @@
 //  Copyright (c) 2013 developmunk. All rights reserved.
 //
 
+#import "DMGridOverlayPlugin.h"
 
 
-@interface GridOverlay : UIWindow
+
+@interface GridOverlay : DMWindow
 
 @property (nonatomic, assign) NSUInteger verticalSpacing, horizontalSpacing, lineWidth;
 @property (nonatomic, strong) UIColor *lineColor;
-@property (nonatomic, assign) float opacity;
+@property (nonatomic, assign) double opacity;
 
 + (GridOverlay *)sharedInstance;
 
@@ -29,21 +31,6 @@
         sharedInstance = [GridOverlay new];
     });
     return sharedInstance;
-}
-
-- (instancetype)init
-{
-	self = [super init];
-	if (self)
-	{
-		self.windowLevel = UIWindowLevelStatusBar + 1.0f;
-		self.frame = [UIScreen mainScreen].bounds;
-		
-		self.backgroundColor = [UIColor clearColor];
-		
-		self.userInteractionEnabled = NO;
-	}
-	return self;
 }
 
 - (void)drawRect:(CGRect)rect
@@ -107,15 +94,14 @@
 		[self setNeedsDisplay];
 	}
 }
-- (void)setOpacity:(CGFloat)opacity
+- (void)setOpacity:(double)opacity
 {
 	if (opacity != _opacity) {
 		_opacity = opacity;
 		
-		self.alpha = 1 - _opacity;
+		self.alpha = 1.0 - _opacity;
 	}
 }
-
 @end
 
 
@@ -129,7 +115,7 @@
 
 
 
-#import "DMGridOverlayPlugin.h"
+
 
 @implementation DMGridOverlayPlugin
 {
@@ -446,7 +432,7 @@
 	}
 	if (cell)
 	{
-		float opacity = stepper.value;
+		double opacity = stepper.value;
 		[[DMTestSettings sharedInstance] setObject:@(opacity) forKey:kOpacity withPluginIdentifier:self.uniqueID];
 		[GridOverlay sharedInstance].opacity = opacity;
 		NSIndexPath *indexPath = [_tableView indexPathForCell:cell];

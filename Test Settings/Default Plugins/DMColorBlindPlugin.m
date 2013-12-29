@@ -481,8 +481,13 @@ const NSUInteger defaultVisionDefectDimension = 32;
 //  Copyright (c) 2013 developmunk. All rights reserved.
 //
 
+#import "DMColorBlindPlugin.h"
 
-@interface ColorBlind : UIWindow
+
+
+
+
+@interface ColorBlind : DMWindow
 
 @property (nonatomic, assign) VisionDefectType visionDefectType;
 + (ColorBlind *)sharedInstance;
@@ -511,16 +516,9 @@ const NSUInteger defaultVisionDefectDimension = 32;
 {
 	self = [super init];
 	if (self)
-	{
-		self.windowLevel = UIWindowLevelStatusBar + 1.0f;
-		self.alpha = 1.0f;
-		self.frame = [UIScreen mainScreen].bounds;
-		
-		self.backgroundColor = [UIColor clearColor];
+	{		
 		CADisplayLink* displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(setNeedsDisplay)];
 		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-		
-		self.userInteractionEnabled = NO;
 		
 		EAGLContext *myEAGLContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 		NSDictionary *options = @{ kCIContextWorkingColorSpace : [NSNull null] };
@@ -634,7 +632,6 @@ const NSUInteger defaultVisionDefectDimension = 32;
 
 
 
-#import "DMColorBlindPlugin.h"
 
 @implementation DMColorBlindPlugin
 
@@ -704,7 +701,7 @@ const NSUInteger defaultVisionDefectDimension = 32;
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
 	switch (section) {
-		case 0: return @"Color vision deficiency is simulated using color grading and blur. Lagging will occur when using this plugin, but this is not a part of the wanted effect. \nWhen active, the status bar is removed.";
+		case 0: return @"Color vision deficiency is simulated using color grading and blur. Lagging will occur when using this plugin, but this is not a part of the wanted effect.";
 		default: return nil;
 	}
 }

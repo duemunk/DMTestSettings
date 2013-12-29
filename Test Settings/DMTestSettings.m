@@ -11,6 +11,92 @@
 
 
 
+@implementation DMTableViewCell_StyleSubtitle
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+	self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
+	return self;
+}
+@end
+
+@implementation DMTableViewCell_StyleValue1
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+	self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier];
+	return self;
+}
+@end
+
+@implementation DMTableViewCell_StyleValue2
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+	self = [super initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:reuseIdentifier];
+	return self;
+}
+@end
+
+
+
+
+
+
+
+
+
+
+
+
+
+@interface DMViewController : UIViewController
+@end
+
+@implementation DMViewController
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+	UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+	if ([rootViewController isKindOfClass:[UINavigationController class]])
+		rootViewController = ((UINavigationController *)rootViewController).viewControllers.lastObject;
+		
+	if (rootViewController)
+		return [rootViewController preferredStatusBarStyle];
+
+	return UIStatusBarStyleDefault;
+}
+@end
+
+
+@implementation DMWindow
+
+- (instancetype)init
+{
+	self = [super init];
+	if (self)
+	{
+		self.windowLevel = UIWindowLevelNormal;
+		self.alpha = 1.0f;
+		self.frame = [UIScreen mainScreen].bounds;
+		self.backgroundColor = [UIColor clearColor];
+		self.userInteractionEnabled = NO;
+		
+		UIViewController *viewController = [DMViewController new];
+		viewController.view.backgroundColor = [UIColor clearColor];
+		self.rootViewController = viewController;
+	}
+	return self;
+}
+
+@end
+
+
+
+
+
+
+
+
+
+
 @protocol DMNavigationControllerDelegate <NSObject>
 
 - (void)didShake;
@@ -229,33 +315,6 @@
 
 
 
-
-
-
-
-@implementation DMTableViewCell_StyleSubtitle
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-	self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
-	return self;
-}
-@end
-
-@implementation DMTableViewCell_StyleValue1
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-	self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier];
-	return self;
-}
-@end
-
-@implementation DMTableViewCell_StyleValue2
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-	self = [super initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:reuseIdentifier];
-	return self;
-}
-@end
 
 
 
