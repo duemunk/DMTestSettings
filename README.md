@@ -33,6 +33,11 @@ Easy accesible in-app settings for testing. Shake to show settings-panel.
 
 Or use ⌃⌘Z in iOS Simulator.
 
+### 4. Use the test suite of plugins
+
+![Settings panel opens on device shake](Screenshots/Plugin_GridOverlay_On.png)
+![Settings panel opens on device shake](Screenshots/Plugin_GridOverlay_Settings.png)
+
 ## Working plugins
 
 ### Grid overlay
