@@ -351,6 +351,7 @@
 		
 		view.tintColor = [UIColor magentaColor];
 		
+		self.viewController.title = @"Test Settings";
 		self.viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleBordered target:self action:@selector(hide)];
 		
 		self.hidden = YES;
