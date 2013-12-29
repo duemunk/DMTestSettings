@@ -697,7 +697,7 @@ const NSUInteger defaultVisionDefectDimension = 32;
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
 	switch (section) {
-		case 0: return @"Parameters";
+		case 0: return @"Type";
 		default: return nil;
 	}
 }
