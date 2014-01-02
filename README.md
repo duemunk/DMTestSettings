@@ -1,11 +1,12 @@
-iOS App Beta Test Settings
+DMTestSettings
 ==========================
+*iOS App Beta Test Settings made easy*
 
 Easy accesible in-app settings for testing. Shake to show settings-panel.
 
 ## Use 
 
-### 1. Import to project with wanted plugins
+### 1. Import to project with wanted plugins – or CocoaPods pod "DMTestSettings"
 
 ```objective-c
 #import "DMTestSettings.h"
@@ -88,3 +89,7 @@ Add your own plugins to the test suite. These might be app-specific or not.
 // Getter for parameter values
 [[[DMTestSettings sharedInstance] objectForKey:kHorizontalSpacing withPluginIdentifier:self.uniqueID] 
 ```
+
+==========================
+[![Version](http://cocoapod-badges.herokuapp.com/v/DMTestSettings/badge.png)](http://cocoadocs.org/docsets/DMTestSettings)
+[![Platform](http://cocoapod-badges.herokuapp.com/p/DMTestSettings/badge.png)](http://cocoadocs.org/docsets/DMTestSettings)

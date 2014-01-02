@@ -1,0 +1,7 @@
+pod "DMTestSettings", :path => "../DMTestSettings.podspec"
+
+target "iOS Test Settings Example" do
+end
+
+target "iOS Test Settings ExampleTests" do
+end

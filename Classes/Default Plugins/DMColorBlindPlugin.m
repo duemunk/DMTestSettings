@@ -499,6 +499,7 @@ const NSUInteger defaultVisionDefectDimension = 32;
 {
 	CIContext *myContext;
 	CIFilter *visionFilter;
+	UIImage *screenshotColorGraded;
 }
 @synthesize visionDefectType = _visionDefectType;
 
@@ -517,7 +518,7 @@ const NSUInteger defaultVisionDefectDimension = 32;
 	self = [super init];
 	if (self)
 	{		
-		CADisplayLink* displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(setNeedsDisplay)];
+		CADisplayLink* displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(refresh)];
 		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 		
 		EAGLContext *myEAGLContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
@@ -527,14 +528,15 @@ const NSUInteger defaultVisionDefectDimension = 32;
 	return self;
 }
 
-- (void)drawRect:(CGRect)rect
+- (void)refresh
 {
-	if (!self.hidden)
+	if (!self.hidden && self.visionDefectType != VisionDefectNone && visionFilter)
 	{
 		CGFloat scale = [UIScreen mainScreen].scale;
 		
 		// Get main window
 		UIWindow *window = [UIApplication sharedApplication].keyWindow;
+		CGRect rect = window.bounds;
 		
 		// Render to image
 		UIGraphicsBeginImageContextWithOptions(rect.size,NO,scale);
@@ -542,41 +544,34 @@ const NSUInteger defaultVisionDefectDimension = 32;
 		UIImage *screenshot = UIGraphicsGetImageFromCurrentImageContext();
 		UIGraphicsEndImageContext();
 		
-		// Color grade image according to color vision deficiency
-//		screenshot = [self doHueAdjustFilterWithBaseImageName:screenshot hueAdjust:1.2];
 		
-//		CIImage *image = [CIImage imageWithCGImage:screenshot.CGImage];
-//		CIFilter *filter = [CIFilter filterWithName:@"CISepiaTone"];
-//		[filter setValue:image forKey:kCIInputImageKey];
-//		[filter setValue:@0.8f forKey:kCIInputIntensityKey];
-//		CIImage *result = [filter valueForKey:kCIOutputImageKey];
-//		screenshot = [UIImage imageWithCGImage:[myContext createCGImage:result fromRect:result.extent]];
-////		screenshot = [UIImage imageWithCIImage:result];
-//		
+		CIImage *normalImage = [CIImage imageWithCGImage:screenshot.CGImage];
+			
+		[visionFilter setValue:normalImage forKey:kCIInputImageKey];
+		CIImage *result = [visionFilter valueForKey:kCIOutputImageKey];
 		
-		if (self.visionDefectType != VisionDefectNone)
+		CGRect r = rect;
+		r.size.width *= scale;
+		r.size.height *= scale;
+		
 		{
-			CIImage *normalImage = [CIImage imageWithCGImage:screenshot.CGImage];
-			
-			[visionFilter setValue:normalImage forKey:kCIInputImageKey];
-			CIImage *result = [visionFilter valueForKey:kCIOutputImageKey];
-			
-			CGRect r = rect;
-			r.size.width *= scale;
-			r.size.height *= scale;
-			
-			{
-				CGImageRef cgImage = [myContext createCGImage:result fromRect:r];
-				screenshot = [UIImage imageWithCGImage:cgImage];
-				CGImageRelease(cgImage);
-			}
-			{
-//				screenshot = [UIImage imageWithCIImage:result];
-			}
-			
-			// Draw image
-			[screenshot drawInRect:rect];
+			CGImageRef cgImage = [myContext createCGImage:result fromRect:r];
+			screenshotColorGraded = [UIImage imageWithCGImage:cgImage];
+			CGImageRelease(cgImage);
 		}
+		{
+			screenshotColorGraded = [UIImage imageWithCIImage:result];
+		}
+			
+		[self setNeedsDisplay];
+	}
+}
+
+- (void)drawRect:(CGRect)rect
+{
+	// Draw image
+	if (screenshotColorGraded) {
+		[screenshotColorGraded drawInRect:rect];
 	}
 }
 
