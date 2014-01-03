@@ -90,30 +90,12 @@
 
 
 
-
-
-
-
-
-
-
-@protocol DMNavigationControllerDelegate <NSObject>
-
-- (void)didShake;
-
-@end
-
-@interface DMNavigationController : UINavigationController
-@property (nonatomic, strong) id<DMNavigationControllerDelegate> delegateShake;
-@end
-
-@implementation DMNavigationController
+@implementation UIWindow (Shakey)
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
-    if (event.subtype == UIEventSubtypeMotionShake) {
-		if ([self.delegateShake respondsToSelector:@selector(didShake)])
-			[self.delegateShake didShake];
-    }
+	if (event.subtype == UIEventSubtypeMotionShake)
+		[DMTestSettings toggleHidden];
+    
     if ([super respondsToSelector:@selector(motionEnded:withEvent:)])
         [super motionEnded:motion withEvent:event];
 }
@@ -326,10 +308,10 @@
 #define cellIdentifier @"CellIdentifier"
 
 
-@interface DMTestSettings () <DMNavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource>
+@interface DMTestSettings () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) NSMutableArray *plugins;
-@property (nonatomic, strong) DMNavigationController *navigationController;
+@property (nonatomic, strong) UINavigationController *navigationController;
 @property (nonatomic, strong) UITableViewController *viewController;
 
 @end
@@ -386,8 +368,7 @@
 		[tableView registerClass:[DMTableViewCell_StyleSubtitle class] forCellReuseIdentifier:cellIdentifier];
 		self.viewController.tableView = tableView;
 		
-		self.navigationController = [[DMNavigationController alloc] initWithRootViewController:self.viewController];
-		self.navigationController.delegateShake = self;
+		self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.viewController];
 		
 		[rootViewController addChildViewController:self.navigationController];
 		[rootViewController.view addSubview:self.navigationController.view];
@@ -465,6 +446,10 @@
 - (void)hide
 {
 	self.hidden = YES;
+}
++ (void)toggleHidden
+{
+	[DMTestSettings sharedInstance].hidden = ![DMTestSettings sharedInstance].hidden;
 }
 
 

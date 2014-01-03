@@ -13,6 +13,7 @@
 @interface DMTableViewCell_StyleValue2 : UITableViewCell @end
 
 @interface DMWindow : UIWindow @end
+@interface UIWindow (Shakey) @end
 
 
 @interface DMTestSettings : NSObject
@@ -22,6 +23,7 @@
 + (DMTestSettings *)start;
 + (DMTestSettings *)startWithPlugins:(NSArray *)plugins;
 + (DMTestSettings *)sharedInstance;
++ (void)toggleHidden;
 
 - (void)setObject:(id)object forKey:(NSString *)key withPluginIdentifier:(NSString *)pluginID;
 - (id)objectForKey:(NSString *)key withPluginIdentifier:(NSString *)pluginID;
