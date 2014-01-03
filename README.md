@@ -19,8 +19,10 @@ Easy accesible in-app settings for testing. Shake to show settings-panel.
 {
   ...
   self.window.rootViewController = ...;
+  [self.window makeKeyAndVisible];
   
   // Start DMTestSettings _after_ setting rootViewController 
+  // _and_ after setting keyWindow
   [DMTestSettings start];
   
   return YES;
