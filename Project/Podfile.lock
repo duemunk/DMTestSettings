@@ -1,0 +1,14 @@
+PODS:
+  - DMTestSettings (0.1.0)
+
+DEPENDENCIES:
+  - DMTestSettings (from `../DMTestSettings.podspec`)
+
+EXTERNAL SOURCES:
+  DMTestSettings:
+    :path: ../DMTestSettings.podspec
+
+SPEC CHECKSUMS:
+  DMTestSettings: fce933e07bde0e525fe38e725518038d687b5467
+
+COCOAPODS: 0.29.0
