@@ -91,7 +91,3 @@ Add your own plugins to the test suite. These might be app-specific or not.
 // Getter for parameter values
 [[[DMTestSettings sharedInstance] objectForKey:kHorizontalSpacing withPluginIdentifier:self.uniqueID] 
 ```
-
-==========================
-[![Version](http://cocoapod-badges.herokuapp.com/v/DMTestSettings/badge.png)](http://cocoadocs.org/docsets/DMTestSettings)
-[![Platform](http://cocoapod-badges.herokuapp.com/p/DMTestSettings/badge.png)](http://cocoadocs.org/docsets/DMTestSettings)
