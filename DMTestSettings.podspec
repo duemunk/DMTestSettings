@@ -1,13 +1,13 @@
 Pod::Spec.new do |s|
   s.name         = "DMTestSettings"
-  s.version      = "0.1.1"
+  s.version      = "0.1.2"
   s.summary      = "Easy accessible in-app settings for testing."
   s.description  = <<-DESC
                    Easy accessible in-app settings for testing. Shake to show settings-panel.
                    DESC
   s.homepage     = "https://github.com/duemunk/DMTestSettings"
   s.screenshots  = "https://raw.github.com/duemunk/DMTestSettings/master/Screenshots/SettingsPanel.png"
-  s.license      = 'GPL3'
+  s.license      = 'GPLv3'
   s.author       = { "Tobias Due Munk" => "tobias@developmunk.dk" }
   s.source       = { :git => "https://github.com/duemunk/DMTestSettings.git", :tag => s.version.to_s }
 

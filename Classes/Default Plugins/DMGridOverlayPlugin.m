@@ -13,6 +13,7 @@
 @interface GridOverlay : DMWindow
 
 @property (nonatomic, assign) NSUInteger verticalSpacing, horizontalSpacing, lineWidth;
+@property (nonatomic, assign) BOOL exludeStatusBar;
 @property (nonatomic, strong) UIColor *lineColor;
 @property (nonatomic, assign) double opacity;
 
@@ -36,14 +37,18 @@
 - (void)drawRect:(CGRect)rect
 {
 	if (!self.hidden) {
-		float x = rect.origin.x;
-		float y = rect.origin.y;
+		float initialX = rect.origin.x;
+		float initialY = rect.origin.y;
+		initialY += self.exludeStatusBar ? 20.0f : 0.0f;
+		
+		float x = initialX;
+		float y = initialY;
 		
 		UIBezierPath *topPath = [UIBezierPath bezierPath];
 		// draw vertical lines
 		while (x < rect.origin.x + rect.size.width)
 		{
-			[topPath moveToPoint:CGPointMake(x, 0)];
+			[topPath moveToPoint:CGPointMake(x, initialY)];
 			[topPath addLineToPoint:CGPointMake(x, rect.origin.y + rect.size.height)];
 			x += self.horizontalSpacing;
 		}
@@ -51,7 +56,7 @@
 		// draw horizontal lines
 		while (y < rect.origin.y + rect.size.height)
 		{
-			[topPath moveToPoint:CGPointMake(0, y)];
+			[topPath moveToPoint:CGPointMake(initialX, y)];
 			[topPath addLineToPoint:CGPointMake(rect.origin.x + rect.size.width, y)];
 			y += self.verticalSpacing;
 		}
@@ -94,6 +99,15 @@
 		[self setNeedsDisplay];
 	}
 }
+- (void)setExludeStatusBar:(BOOL)exludeStatusBar
+{
+	if (exludeStatusBar != _exludeStatusBar) {
+		_exludeStatusBar = exludeStatusBar;
+		
+		[self setNeedsDisplay];
+	}
+}
+
 - (void)setOpacity:(double)opacity
 {
 	if (opacity != _opacity) {
@@ -128,6 +142,7 @@
 
 #define kHorizontalSpacing @"kHorizontalSpacing"
 #define kVerticalSpacing @"kVerticalSpacing"
+#define kExludeStatusBar @"kExludeStatusBar"
 #define kLineWidth @"kLineWidth"
 #define kLineColor @"kLineColor"
 #define kOpacity @"kOpacity"
@@ -138,6 +153,7 @@
 	self.uniqueID = @"GridOverlay";
 	self.parameterDefaults = @{kHorizontalSpacing	:	@(20),
 							   kVerticalSpacing		:	@(20),
+							   kExludeStatusBar		:	@YES,
 							   kLineWidth			:	@(2),
 							   kLineColor			:	[UIColor grayColor],
 							   kOpacity				:	@(0.8f)};
@@ -166,6 +182,7 @@
 	[GridOverlay sharedInstance].hidden = !self.enabled;
 	[GridOverlay sharedInstance].verticalSpacing = [[[DMTestSettings sharedInstance] objectForKey:kVerticalSpacing withPluginIdentifier:self.uniqueID] floatValue];
 	[GridOverlay sharedInstance].horizontalSpacing = [[[DMTestSettings sharedInstance] objectForKey:kHorizontalSpacing withPluginIdentifier:self.uniqueID] floatValue];
+	[GridOverlay sharedInstance].exludeStatusBar = [[[DMTestSettings sharedInstance] objectForKey:kExludeStatusBar withPluginIdentifier:self.uniqueID] boolValue];
 	[GridOverlay sharedInstance].lineColor = [[DMTestSettings sharedInstance] objectForKey:kLineColor withPluginIdentifier:self.uniqueID];
 	[GridOverlay sharedInstance].lineWidth = [[[DMTestSettings sharedInstance] objectForKey:kLineWidth withPluginIdentifier:self.uniqueID] floatValue];
 	[GridOverlay sharedInstance].opacity = [[[DMTestSettings sharedInstance] objectForKey:kOpacity withPluginIdentifier:self.uniqueID] floatValue];
@@ -197,7 +214,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	switch (section) {
-		case 0: return 2;
+		case 0: return 3;
 		case 1: return 2;
 		default: return 0;
 	}
@@ -207,6 +224,7 @@
 
 
 #define stepperViewTag 218734619
+#define switchViewTag 120934875
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -283,6 +301,31 @@
 					}
 					stepper.value = spacing;
 					[stepper addTarget:self action:@selector(verticalStepperChanged:) forControlEvents:UIControlEventValueChanged];
+				}
+					break;
+				case 2:
+				{
+					cell.textLabel.text = @"Exlude status bar";
+					
+					int exludeStatusBar = [[[DMTestSettings sharedInstance] objectForKey:kExludeStatusBar withPluginIdentifier:self.uniqueID] boolValue];
+					cell.detailTextLabel.text = nil;
+					
+					cell.selectionStyle = UITableViewCellSelectionStyleNone;
+					
+					UISwitch *_switch;
+					if (cell.accessoryView.tag == switchViewTag)
+					{
+						_switch = (UISwitch *)cell.accessoryView;
+						[_switch removeTarget:self action:NULL forControlEvents:UIControlEventValueChanged];
+					}
+					else
+					{
+						_switch = [UISwitch new];
+						_switch.tag = switchViewTag;
+						cell.accessoryView = _switch;
+					}
+					_switch.on = exludeStatusBar;
+					[_switch addTarget:self action:@selector(exludeStatusBarSwitchChanged:) forControlEvents:UIControlEventValueChanged];
 				}
 					break;
 					
@@ -397,6 +440,25 @@
 		int spacing = stepper.value;
 		[[DMTestSettings sharedInstance] setObject:@(spacing) forKey:kVerticalSpacing withPluginIdentifier:self.uniqueID];
 		[GridOverlay sharedInstance].verticalSpacing = spacing;
+		NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+		[self configureCell:cell forIndexPath:indexPath];
+	}
+}
+
+- (void)exludeStatusBarSwitchChanged:(UISwitch *)_switch
+{
+	UITableViewCell *cell;
+	if ([_switch.superview isKindOfClass:[UITableViewCell class]]) {
+		cell = (UITableViewCell *)_switch.superview;
+	}
+	else if ([_switch.superview.superview isKindOfClass:[UITableViewCell class]]) {
+		cell = (UITableViewCell *)_switch.superview.superview;
+	}
+	if (cell)
+	{
+		int exludeStatusBar = _switch.on;
+		[[DMTestSettings sharedInstance] setObject:@(exludeStatusBar) forKey:kExludeStatusBar withPluginIdentifier:self.uniqueID];
+		[GridOverlay sharedInstance].exludeStatusBar = exludeStatusBar;
 		NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
 		[self configureCell:cell forIndexPath:indexPath];
 	}
