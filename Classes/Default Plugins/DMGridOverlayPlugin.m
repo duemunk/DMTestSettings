@@ -34,31 +34,75 @@
     return sharedInstance;
 }
 
+- (instancetype)init
+{
+	self = [super init];
+	if (self)
+	{
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setNeedsDisplay) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setNeedsDisplay) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+	}
+	return self;
+}
+
+- (CGFloat)getStatusBarHeight
+{
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+	CGSize s = [UIApplication sharedApplication].statusBarFrame.size;
+    return UIInterfaceOrientationIsLandscape(orientation) ? s.width : s.height;
+}
+
 - (void)drawRect:(CGRect)rect
 {
-	if (!self.hidden) {
+	if (!self.hidden)
+	{
 		float initialX = rect.origin.x;
 		float initialY = rect.origin.y;
-		initialY += self.exludeStatusBar ? 20.0f : 0.0f;
+		
+		float endX = rect.origin.x + rect.size.width;
+		float endY = rect.origin.y + rect.size.height;
+	
+		UIInterfaceOrientation orienation = [UIApplication sharedApplication].statusBarOrientation;
+		BOOL portrait = UIInterfaceOrientationIsPortrait(orienation);
+		BOOL upsideDown = (orienation == UIInterfaceOrientationPortraitUpsideDown) || (orienation == UIInterfaceOrientationLandscapeRight);
+		
+		if (self.exludeStatusBar)
+		{
+			if (upsideDown)
+			{
+				if (portrait)
+					endY -= [self getStatusBarHeight];
+				else
+					endX -= [self getStatusBarHeight];
+			}
+			else
+			{
+				if (portrait)
+					initialY += [self getStatusBarHeight];
+				else
+					initialX += [self getStatusBarHeight];
+			}
+		}
+		
 		
 		float x = initialX;
 		float y = initialY;
 		
 		UIBezierPath *topPath = [UIBezierPath bezierPath];
 		// draw vertical lines
-		while (x < rect.origin.x + rect.size.width)
+		while (x < endX)
 		{
 			[topPath moveToPoint:CGPointMake(x, initialY)];
-			[topPath addLineToPoint:CGPointMake(x, rect.origin.y + rect.size.height)];
-			x += self.horizontalSpacing;
+			[topPath addLineToPoint:CGPointMake(x, endY)];
+			x += portrait ? self.horizontalSpacing : self.verticalSpacing;
 		}
 		
 		// draw horizontal lines
-		while (y < rect.origin.y + rect.size.height)
+		while (y < endY)
 		{
 			[topPath moveToPoint:CGPointMake(initialX, y)];
-			[topPath addLineToPoint:CGPointMake(rect.origin.x + rect.size.width, y)];
-			y += self.verticalSpacing;
+			[topPath addLineToPoint:CGPointMake(endX, y)];
+			y += portrait ? self.verticalSpacing : self.horizontalSpacing;
 		}
 		
 		[self.lineColor setStroke];
