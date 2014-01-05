@@ -321,6 +321,7 @@
 
 #import "DMGridOverlayPlugin.h"
 #import "DMColorBlindPlugin.h"
+#import "DMFpsPlugin.h"
 
 @implementation DMTestSettings
 
@@ -338,6 +339,7 @@
 	// Default plugins
 	[[DMTestSettings sharedInstance] addPlugin:[DMGridOverlayPlugin new]];
 	[[DMTestSettings sharedInstance] addPlugin:[DMColorBlindPlugin new]];
+	[[DMTestSettings sharedInstance] addPlugin:[DMFpsPlugin new]];
 	for (DMTestSettingsPlugin *plugin in plugins) {
 		[[DMTestSettings sharedInstance] addPlugin:plugin];
 	}

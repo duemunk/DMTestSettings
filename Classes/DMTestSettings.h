@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+//@import UIKit;
 
 @interface DMTableViewCell_StyleSubtitle : UITableViewCell @end
 @interface DMTableViewCell_StyleValue1 : UITableViewCell @end
