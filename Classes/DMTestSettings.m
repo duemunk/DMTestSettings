@@ -89,7 +89,7 @@
 @end
 
 
-
+// Category to catch shake-gesture
 @implementation UIWindow (Shakey)
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {

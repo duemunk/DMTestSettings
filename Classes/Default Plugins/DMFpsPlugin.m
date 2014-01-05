@@ -55,12 +55,15 @@
 		
 		if (!label) {
 			label = [UILabel new];
-			[self addSubview:label];
+			[self.rootViewController.view addSubview:label];
 			label.textColor = [UIApplication sharedApplication].statusBarStyle == UIStatusBarStyleLightContent ? [UIColor whiteColor] : [UIColor blackColor];
 			label.font = [UIFont boldSystemFontOfSize:12.0f];
+			
+			label.translatesAutoresizingMaskIntoConstraints = NO;
+			[self.rootViewController.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[label(==20)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(label)]];
+			[self.rootViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.rootViewController.view attribute:NSLayoutAttributeCenterX multiplier:1.f constant:55.f]];
 		}
 		label.text = [NSString stringWithFormat:@"Fps: %.f",fpsSmooth];
-		label.frame = CGRectMake(self.frame.size.width/2-70, 0, 50, 20.0f);
 	}
 	previousFrameTimeStamp = displayLink.timestamp;
 }
