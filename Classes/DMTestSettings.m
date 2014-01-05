@@ -378,18 +378,34 @@
 		
 		UIView *view = self.navigationController.view;
 		view.translatesAutoresizingMaskIntoConstraints = NO;
-		[rootViewController.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(topPadding)-[view]-(padding)-|"
+		[rootViewController.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|->=topPadding-[view(==600@900)]->=padding-|"
 																						options:0
 																						metrics:@{@"topPadding"	: @(10+20),
 																								  @"padding"	: @(10)}
 																						  views:NSDictionaryOfVariableBindings(view)]];
-		[rootViewController.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(padding)-[view]-(padding)-|"
+		[rootViewController.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|->=padding-[view(==600@900)]->=padding-|"
 																						options:0
 																						metrics:@{@"padding"	: @(10)}
 																						  views:NSDictionaryOfVariableBindings(view)]];
+		[rootViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:view
+																		   attribute:NSLayoutAttributeCenterX
+																		   relatedBy:NSLayoutRelationEqual
+																			  toItem:rootViewController.view
+																		   attribute:NSLayoutAttributeCenterX
+																		   multiplier:1.0f
+																			 constant:0.0f]];
+		[rootViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:view
+																			attribute:NSLayoutAttributeCenterY
+																			relatedBy:NSLayoutRelationEqual
+																			   toItem:rootViewController.view
+																			attribute:NSLayoutAttributeCenterY
+																		   multiplier:1.0f
+																			 constant:0.0f]];
+		
 		view.layer.shadowColor = [UIColor blackColor].CGColor;
 		view.layer.shadowOpacity = 0.2f;
 		view.layer.shadowRadius	= 10.0f;
+		view.alpha = 0.98f;
 		
 		view.tintColor = [UIColor magentaColor];
 		
