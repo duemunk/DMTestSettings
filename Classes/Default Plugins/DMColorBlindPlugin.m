@@ -485,9 +485,71 @@ const NSUInteger defaultVisionDefectDimension = 32;
 
 
 
+@protocol ColorDegradeScreenshotOperationDelegate <NSObject>
+- (void)colorDegradeDidProduceImage:(UIImage *)image;
+@end
+
+@interface ColorDegradeScreenshotOperation: NSOperation
+@property (strong, nonatomic) CIFilter *visionFilter;
+@property (strong, nonatomic) id<ColorDegradeScreenshotOperationDelegate> delegate;
+@end
+
+@implementation ColorDegradeScreenshotOperation
+
+- (void)main {
+    // a lengthy operation
+    @autoreleasepool
+	{
+		CGFloat scale = [UIScreen mainScreen].scale;
+		
+		// Get main window
+		UIWindow *window = [UIApplication sharedApplication].keyWindow;
+		CGRect rect = window.bounds;
+		
+		// Render to image
+		UIGraphicsBeginImageContextWithOptions(rect.size,NO,scale);
+		[window drawViewHierarchyInRect:rect afterScreenUpdates:NO];
+		UIImage *screenshot = UIGraphicsGetImageFromCurrentImageContext();
+		UIGraphicsEndImageContext();
+		
+		CIImage *normalImage = [CIImage imageWithCGImage:screenshot.CGImage];
+
+		[self.visionFilter setValue:normalImage forKey:kCIInputImageKey];
+		CIImage *result = [self.visionFilter valueForKey:kCIOutputImageKey];
+
+		CGRect r = rect;
+		r.size.width *= scale;
+		r.size.height *= scale;
+
+		
+		// Keep own CIContext – a little bit faster than:
+		// __block UIImage *screenshotColorGraded = [UIImage imageWithCIImage:result];
+		static CIContext *myContext;
+		if (!myContext) {
+			EAGLContext *myEAGLContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+			NSDictionary *options = @{ kCIContextWorkingColorSpace : [NSNull null] };
+			myContext = [CIContext contextWithEAGLContext:myEAGLContext options:options];
+		}
+		CGImageRef cgImage = [myContext createCGImage:result fromRect:r];
+		__block UIImage *screenshotColorGraded = [UIImage imageWithCGImage:cgImage];
+		CGImageRelease(cgImage);
+		
+			
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if ([self.delegate respondsToSelector:@selector(colorDegradeDidProduceImage:)]) {
+				[self.delegate colorDegradeDidProduceImage:screenshotColorGraded];
+			}
+		});
+		
+    }
+}
+@end
 
 
-@interface ColorBlind : DMWindow
+
+
+
+@interface ColorBlind : DMWindow <ColorDegradeScreenshotOperationDelegate>
 
 @property (nonatomic, assign) VisionDefectType visionDefectType;
 + (ColorBlind *)sharedInstance;
@@ -500,6 +562,9 @@ const NSUInteger defaultVisionDefectDimension = 32;
 	CIContext *myContext;
 	CIFilter *visionFilter;
 	UIImage *screenshotColorGraded;
+	UIActivityIndicatorView *activityView;
+	
+	NSOperationQueue *queue;
 }
 @synthesize visionDefectType = _visionDefectType;
 
@@ -532,52 +597,50 @@ const NSUInteger defaultVisionDefectDimension = 32;
 {
 	if (!self.hidden && self.visionDefectType != VisionDefectNone && visionFilter)
 	{
-		CGFloat scale = [UIScreen mainScreen].scale;
-		
-		// Get main window
-		UIWindow *window = [UIApplication sharedApplication].keyWindow;
-		CGRect rect = window.bounds;
-		
-		// Render to image
-		UIGraphicsBeginImageContextWithOptions(rect.size,NO,scale);
-		[window drawViewHierarchyInRect:rect afterScreenUpdates:YES];
-		UIImage *screenshot = UIGraphicsGetImageFromCurrentImageContext();
-		UIGraphicsEndImageContext();
-		
-		
-		CIImage *normalImage = [CIImage imageWithCGImage:screenshot.CGImage];
-			
-		[visionFilter setValue:normalImage forKey:kCIInputImageKey];
-		CIImage *result = [visionFilter valueForKey:kCIOutputImageKey];
-		
-		CGRect r = rect;
-		r.size.width *= scale;
-		r.size.height *= scale;
-		
+		if (!queue)
 		{
-			CGImageRef cgImage = [myContext createCGImage:result fromRect:r];
-			screenshotColorGraded = [UIImage imageWithCGImage:cgImage];
-			CGImageRelease(cgImage);
+			queue = [NSOperationQueue new];
 		}
+
+		if (queue.operationCount < 1)
 		{
-			screenshotColorGraded = [UIImage imageWithCIImage:result];
-		}
+			ColorDegradeScreenshotOperation *operation = [ColorDegradeScreenshotOperation new];
+			operation.visionFilter = visionFilter;
+			operation.delegate = self;
+			operation.queuePriority = NSOperationQueuePriorityHigh;
 			
-		[self setNeedsDisplay];
+			[queue addOperation:operation];
+		}
 	}
 }
+
+
+
+
 
 - (void)drawRect:(CGRect)rect
 {
 	// Draw image
-	if (screenshotColorGraded) {
+	if (screenshotColorGraded)
 		[screenshotColorGraded drawInRect:rect];
-	}
 }
 
 - (void)setHidden:(BOOL)hidden
 {
 	super.hidden = hidden;
+	
+	if (!hidden && !screenshotColorGraded)
+	{
+		if (!activityView) {
+			activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+			activityView.backgroundColor = [UIColor colorWithWhite:0.500 alpha:0.500];
+			[self addSubview:activityView];
+			[activityView startAnimating];
+			activityView.frame = CGRectMake(0, 0, 88.f, 88.f);
+			activityView.layer.cornerRadius = 44.f;
+		}
+		activityView.center = self.center;
+	}
 }
 
 
@@ -606,17 +669,29 @@ const NSUInteger defaultVisionDefectDimension = 32;
 
 - (void)setVisionDefectType:(VisionDefectType)visionDefectType
 {
-	if (visionDefectType != _visionDefectType)
-	{
-		_visionDefectType = visionDefectType;
-		
-		BOOL enabled = (visionDefectType != VisionDefectNone);
-		if (enabled) {
-			visionFilter = nil;
-			visionFilter = [VisionDefectSimulation filterForVisionDefect:visionDefectType
-												   withBackingScaleFactor:[UIScreen mainScreen].scale];
-		}
+	_visionDefectType = visionDefectType;
+	
+	[activityView startAnimating];
+	
+	BOOL enabled = (visionDefectType != VisionDefectNone);
+	if (enabled) {
+		visionFilter = nil;
+		visionFilter = [VisionDefectSimulation filterForVisionDefect:visionDefectType
+											  withBackingScaleFactor:[UIScreen mainScreen].scale];
 	}
+}
+
+
+- (void)colorDegradeDidProduceImage:(UIImage *)image
+{
+	[[NSOperationQueue mainQueue] addOperationWithBlock:^{
+		
+		screenshotColorGraded = image;
+		[self setNeedsDisplay];
+		
+		if (activityView)
+			[activityView stopAnimating];
+	}];
 }
 
 
