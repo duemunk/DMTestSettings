@@ -71,9 +71,15 @@
 			if (upsideDown)
 			{
 				if (portrait)
+				{
 					endY -= [self getStatusBarHeight];
+					initialY += fmod(endY-initialY, self.verticalSpacing) - self.verticalSpacing; // Offset to fake draw from top
+				}
 				else
+				{
 					endX -= [self getStatusBarHeight];
+					initialX += fmod(endX - initialX, self.verticalSpacing) - self.verticalSpacing; // Offset to fake draw from top
+				}
 			}
 			else
 			{
@@ -84,13 +90,12 @@
 			}
 		}
 		
-		
 		float x = initialX;
 		float y = initialY;
 		
 		UIBezierPath *topPath = [UIBezierPath bezierPath];
 		// draw vertical lines
-		while (x < endX)
+		while (x <= endX)
 		{
 			[topPath moveToPoint:CGPointMake(x, initialY)];
 			[topPath addLineToPoint:CGPointMake(x, endY)];
@@ -98,7 +103,7 @@
 		}
 		
 		// draw horizontal lines
-		while (y < endY)
+		while (y <= endY)
 		{
 			[topPath moveToPoint:CGPointMake(initialX, y)];
 			[topPath addLineToPoint:CGPointMake(endX, y)];
