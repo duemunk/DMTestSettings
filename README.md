@@ -51,6 +51,8 @@ Color-grades the entire UI to simulate color-blind conditions.
 
 See [here](https://github.com/duemunk/iOS-App-Beta-Test-Settings/wiki/Plugins) for more details on plugins.
 
+### FPS
+Shows current FPS in the statusbar.
 
 ## Make your own plugins!
 
