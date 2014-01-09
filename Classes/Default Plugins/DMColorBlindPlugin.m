@@ -552,8 +552,7 @@ const NSUInteger defaultVisionDefectDimension = 32;
 @interface ColorBlind : DMWindow <ColorDegradeScreenshotOperationDelegate>
 
 @property (nonatomic, assign) VisionDefectType visionDefectType;
-+ (ColorBlind *)sharedInstance;
-
+@property (nonatomic, strong) UIActivityIndicatorView *activityView;
 @end
 
 
@@ -568,21 +567,13 @@ const NSUInteger defaultVisionDefectDimension = 32;
 }
 @synthesize visionDefectType = _visionDefectType;
 
-+ (ColorBlind *)sharedInstance
-{
-    static ColorBlind *sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [ColorBlind new];
-    });
-    return sharedInstance;
-}
-
 - (instancetype)init
 {
 	self = [super init];
 	if (self)
-	{		
+	{
+		self.hidden = NO;
+		
 		CADisplayLink* displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(refresh)];
 		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 		
@@ -625,53 +616,12 @@ const NSUInteger defaultVisionDefectDimension = 32;
 		[screenshotColorGraded drawInRect:rect];
 }
 
-- (void)setHidden:(BOOL)hidden
-{
-	super.hidden = hidden;
-	
-	if (!hidden && !screenshotColorGraded)
-	{
-		if (!activityView) {
-			activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-			activityView.backgroundColor = [UIColor colorWithWhite:0.500 alpha:0.500];
-			[self addSubview:activityView];
-			[activityView startAnimating];
-			activityView.frame = CGRectMake(0, 0, 88.f, 88.f);
-			activityView.layer.cornerRadius = 44.f;
-		}
-		activityView.center = self.center;
-	}
-}
-
-
--(UIImage *)doHueAdjustFilterWithBaseImageName:(UIImage *)baseImage hueAdjust:(CGFloat)hueAdjust
-{
-    CIImage *inputImage = [[CIImage alloc] initWithImage:baseImage];
-	
-    CIFilter * controlsFilter = [CIFilter filterWithName:@"CIHueAdjust"];
-    [controlsFilter setValue:inputImage forKey:kCIInputImageKey];
-    [controlsFilter setValue:@(hueAdjust) forKey:@"inputAngle"];
-	
-    CIImage *displayImage = controlsFilter.outputImage;
-    UIImage *finalImage = [UIImage imageWithCIImage:displayImage];
-	
-    CIContext *context = [CIContext contextWithOptions:nil];
-    if (displayImage == nil || finalImage == nil) {
-        // We did not get output image. Let's display the original image itself.
-		return  baseImage;
-    }else {
-        // We got output image. Display it.
-        return  [UIImage imageWithCGImage:[context createCGImage:displayImage fromRect:displayImage.extent]];
-    }
-}
-
-
 
 - (void)setVisionDefectType:(VisionDefectType)visionDefectType
 {
 	_visionDefectType = visionDefectType;
 	
-	[activityView startAnimating];
+	[self.activityView startAnimating];
 	
 	BOOL enabled = (visionDefectType != VisionDefectNone);
 	if (enabled) {
@@ -695,6 +645,22 @@ const NSUInteger defaultVisionDefectDimension = 32;
 }
 
 
+
+- (UIActivityIndicatorView *)activityView
+{
+	if (!activityView) {
+		activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+		activityView.backgroundColor = [UIColor colorWithWhite:0.500 alpha:0.500];
+		[self.rootViewController.view addSubview:activityView];
+		CGFloat size = 88.f;
+		activityView.frame = CGRectMake(0, 0, size, size);
+		activityView.center = self.rootViewController.view.center;
+		activityView.layer.cornerRadius = size / 2.0;
+	}
+	return activityView;
+}
+
+
 @end
 
 
@@ -704,6 +670,9 @@ const NSUInteger defaultVisionDefectDimension = 32;
 
 
 @implementation DMColorBlindPlugin
+{
+	ColorBlind *colorBlind;
+}
 
 
 #define cellIdentifier @"GridOverlayCellIdentifier"
@@ -738,11 +707,21 @@ const NSUInteger defaultVisionDefectDimension = 32;
 	[self updateToNewSettings];
 }
 
+
 - (void)updateToNewSettings
 {
-	[ColorBlind sharedInstance].hidden = !self.enabled;
-	
-	[ColorBlind sharedInstance].visionDefectType = [[[DMTestSettings sharedInstance] objectForKey:kColorBlindType withPluginIdentifier:self.uniqueID] intValue];
+	if (self.enabled)
+	{
+		if (!colorBlind)
+			colorBlind = [ColorBlind new];
+		
+		colorBlind.visionDefectType = [[[DMTestSettings sharedInstance] objectForKey:kColorBlindType withPluginIdentifier:self.uniqueID] intValue];
+	}
+	else
+	{
+		colorBlind.hidden = YES; // To remove from app windows
+		colorBlind = nil;
+	}
 }
 
 
@@ -821,7 +800,8 @@ const NSUInteger defaultVisionDefectDimension = 32;
 		{
 			VisionDefectType visionDefectType = (VisionDefectType)indexPath.row;
 			[[DMTestSettings sharedInstance] setObject:@(visionDefectType) forKey:kColorBlindType withPluginIdentifier:self.uniqueID];
-			[ColorBlind sharedInstance].visionDefectType = visionDefectType;
+			if (colorBlind)
+				colorBlind.visionDefectType = visionDefectType;
 			[tableView reloadData];
 		}
 			break;

@@ -11,7 +11,6 @@
 
 
 @interface Fps : DMWindow
-+ (Fps *)sharedInstance;
 @end
 
 
@@ -22,21 +21,14 @@
 	CADisplayLink* displayLink;
 }
 
-+ (Fps *)sharedInstance
-{
-    static Fps *sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [Fps new];
-    });
-    return sharedInstance;
-}
-
 - (instancetype)init
 {
 	self = [super init];
 	if (self)
 	{
+		self.windowLevel = UIWindowLevelStatusBar + 1.0f;
+		self.hidden = NO;
+		
 		displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(newFrame)];
 		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 	}
@@ -51,7 +43,8 @@
 		CFTimeInterval timeSinceLastFrame = displayLink.timestamp-previousFrameTimeStamp;
 		double fps = 1.0/timeSinceLastFrame;
 		static double fpsSmooth = 60.0f;
-		fpsSmooth = fpsSmooth * 0.9 + fps * 0.1;
+		double lowpass = 0.01;
+		fpsSmooth = fpsSmooth * (1.0-lowpass) + fps * (lowpass);
 		
 		if (!label) {
 			label = [UILabel new];
@@ -75,7 +68,9 @@
 
 
 @implementation DMFpsPlugin
-
+{
+	Fps *fps;
+}
 
 
 - (void)setup
@@ -98,7 +93,16 @@
 
 - (void)updateToNewSettings
 {
-	[Fps sharedInstance].hidden = !self.enabled;
+	if (self.enabled)
+	{
+		if (!fps)
+			fps = [Fps new];
+	}
+	else
+	{
+		fps.hidden = YES; // To remove from app windows
+		fps = nil;
+	}
 }
 
 @end

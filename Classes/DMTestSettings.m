@@ -324,6 +324,9 @@
 #import "DMFpsPlugin.h"
 
 @implementation DMTestSettings
+{
+	DMWindow *window;
+}
 
 @synthesize plugins = _plugins;
 
@@ -360,58 +363,7 @@
 	self = [super init];
 	if (self)
 	{
-		UIWindow *window = [UIApplication sharedApplication].keyWindow;
-		UIViewController *rootViewController = window.rootViewController;
-		
-		self.viewController = [UITableViewController new];
-		UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-		tableView.delegate = self;
-		tableView.dataSource = self;
-		[tableView registerClass:[DMTableViewCell_StyleSubtitle class] forCellReuseIdentifier:cellIdentifier];
-		self.viewController.tableView = tableView;
-		
-		self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.viewController];
-		
-		[rootViewController addChildViewController:self.navigationController];
-		[rootViewController.view addSubview:self.navigationController.view];
-		[self.navigationController didMoveToParentViewController:rootViewController];
-		
-		UIView *view = self.navigationController.view;
-		view.translatesAutoresizingMaskIntoConstraints = NO;
-		[rootViewController.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|->=topPadding-[view(==600@900)]->=padding-|"
-																						options:0
-																						metrics:@{@"topPadding"	: @(10+20),
-																								  @"padding"	: @(10)}
-																						  views:NSDictionaryOfVariableBindings(view)]];
-		[rootViewController.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|->=padding-[view(==600@900)]->=padding-|"
-																						options:0
-																						metrics:@{@"padding"	: @(10)}
-																						  views:NSDictionaryOfVariableBindings(view)]];
-		[rootViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:view
-																		   attribute:NSLayoutAttributeCenterX
-																		   relatedBy:NSLayoutRelationEqual
-																			  toItem:rootViewController.view
-																		   attribute:NSLayoutAttributeCenterX
-																		   multiplier:1.0f
-																			 constant:0.0f]];
-		[rootViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:view
-																			attribute:NSLayoutAttributeCenterY
-																			relatedBy:NSLayoutRelationEqual
-																			   toItem:rootViewController.view
-																			attribute:NSLayoutAttributeCenterY
-																		   multiplier:1.0f
-																			 constant:0.0f]];
-		
-		view.layer.shadowColor = [UIColor blackColor].CGColor;
-		view.layer.shadowOpacity = 0.2f;
-		view.layer.shadowRadius	= 10.0f;
-		view.alpha = 0.98f;
-		
-		view.tintColor = [UIColor magentaColor];
-		
-		self.viewController.title = @"Test Settings";
-		self.viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleBordered target:self action:@selector(hide)];
-		
+		[UIWindow new];
 		self.hidden = YES;
 	}
 	return self;
@@ -455,11 +407,67 @@
 
 - (void)setHidden:(BOOL)hidden
 {
-	if (hidden != _hidden) {
-		_hidden = hidden;
+	_hidden = hidden;
+	
+	if (!window && !hidden)
+	{
+		window = [DMWindow new];
+		window.windowLevel = [UIApplication sharedApplication].keyWindow.windowLevel + 1.0f;
+		window.userInteractionEnabled = YES;
+		window.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.300];
+		UIViewController *rootViewController = window.rootViewController;
 		
-		self.navigationController.view.hidden = hidden;
+		self.viewController = [UITableViewController new];
+		UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+		tableView.delegate = self;
+		tableView.dataSource = self;
+		[tableView registerClass:[DMTableViewCell_StyleSubtitle class] forCellReuseIdentifier:cellIdentifier];
+		self.viewController.tableView = tableView;
+
+		self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.viewController];
+
+		[rootViewController addChildViewController:self.navigationController];
+		[rootViewController.view addSubview:self.navigationController.view];
+		[self.navigationController didMoveToParentViewController:rootViewController];
+		
+		UIView *view = self.navigationController.view;
+		view.translatesAutoresizingMaskIntoConstraints = NO;
+		[rootViewController.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|->=topPadding-[view(==600@900)]->=padding-|"
+																						options:0
+																						metrics:@{@"topPadding"	: @(10+20),
+																								  @"padding"	: @(10)}
+																						  views:NSDictionaryOfVariableBindings(view)]];
+		[rootViewController.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|->=padding-[view(==600@900)]->=padding-|"
+																						options:0
+																						metrics:@{@"padding"	: @(10)}
+																						  views:NSDictionaryOfVariableBindings(view)]];
+		[rootViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:view
+																			attribute:NSLayoutAttributeCenterX
+																			relatedBy:NSLayoutRelationEqual
+																			   toItem:rootViewController.view
+																			attribute:NSLayoutAttributeCenterX
+																		   multiplier:1.0f
+																			 constant:0.0f]];
+		[rootViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:view
+																			attribute:NSLayoutAttributeCenterY
+																			relatedBy:NSLayoutRelationEqual
+																			   toItem:rootViewController.view
+																			attribute:NSLayoutAttributeCenterY
+																		   multiplier:1.0f
+																			 constant:0.0f]];
+		
+//			view.layer.shadowColor = [UIColor blackColor].CGColor;
+//			view.layer.shadowOpacity = 0.2f;
+//			view.layer.shadowRadius	= 10.0f;
+		view.alpha = 0.98f;
+		
+		view.tintColor = [UIColor magentaColor];
+		
+		self.viewController.title = @"Test Settings";
+		self.viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleBordered target:self action:@selector(hide)];
 	}
+	if (window)
+		window.hidden = hidden;
 }
 - (void)hide
 {

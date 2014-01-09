@@ -17,28 +17,18 @@
 @property (nonatomic, strong) UIColor *lineColor;
 @property (nonatomic, assign) double opacity;
 
-+ (GridOverlay *)sharedInstance;
-
 @end
 
 
 @implementation GridOverlay
-
-+ (GridOverlay *)sharedInstance
-{
-    static GridOverlay *sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [GridOverlay new];
-    });
-    return sharedInstance;
-}
 
 - (instancetype)init
 {
 	self = [super init];
 	if (self)
 	{
+		self.hidden = NO;
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setNeedsDisplay) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setNeedsDisplay) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
 	}
@@ -117,13 +107,6 @@
 	}
 }
 
-- (void)setHidden:(BOOL)hidden
-{
-	super.hidden = hidden;
-	
-	[self setNeedsDisplay];
-}
-
 - (void)setVerticalSpacing:(NSUInteger)verticalSpacing
 {
 	if (verticalSpacing != _verticalSpacing) {
@@ -183,6 +166,7 @@
 @implementation DMGridOverlayPlugin
 {
 	UITableView *_tableView;
+	GridOverlay *gridOverlay;
 }
 
 
@@ -226,15 +210,26 @@
 	[self updateToNewSettings];
 }
 
+
 - (void)updateToNewSettings
 {
-	[GridOverlay sharedInstance].hidden = !self.enabled;
-	[GridOverlay sharedInstance].verticalSpacing = [[[DMTestSettings sharedInstance] objectForKey:kVerticalSpacing withPluginIdentifier:self.uniqueID] floatValue];
-	[GridOverlay sharedInstance].horizontalSpacing = [[[DMTestSettings sharedInstance] objectForKey:kHorizontalSpacing withPluginIdentifier:self.uniqueID] floatValue];
-	[GridOverlay sharedInstance].exludeStatusBar = [[[DMTestSettings sharedInstance] objectForKey:kExludeStatusBar withPluginIdentifier:self.uniqueID] boolValue];
-	[GridOverlay sharedInstance].lineColor = [[DMTestSettings sharedInstance] objectForKey:kLineColor withPluginIdentifier:self.uniqueID];
-	[GridOverlay sharedInstance].lineWidth = [[[DMTestSettings sharedInstance] objectForKey:kLineWidth withPluginIdentifier:self.uniqueID] floatValue];
-	[GridOverlay sharedInstance].opacity = [[[DMTestSettings sharedInstance] objectForKey:kOpacity withPluginIdentifier:self.uniqueID] floatValue];
+	if (self.enabled)
+	{
+		if (!gridOverlay)
+			gridOverlay = [GridOverlay new];
+		
+		gridOverlay.verticalSpacing = [[[DMTestSettings sharedInstance] objectForKey:kVerticalSpacing withPluginIdentifier:self.uniqueID] floatValue];
+		gridOverlay.horizontalSpacing = [[[DMTestSettings sharedInstance] objectForKey:kHorizontalSpacing withPluginIdentifier:self.uniqueID] floatValue];
+		gridOverlay.exludeStatusBar = [[[DMTestSettings sharedInstance] objectForKey:kExludeStatusBar withPluginIdentifier:self.uniqueID] boolValue];
+		gridOverlay.lineColor = [[DMTestSettings sharedInstance] objectForKey:kLineColor withPluginIdentifier:self.uniqueID];
+		gridOverlay.lineWidth = [[[DMTestSettings sharedInstance] objectForKey:kLineWidth withPluginIdentifier:self.uniqueID] floatValue];
+		gridOverlay.opacity = [[[DMTestSettings sharedInstance] objectForKey:kOpacity withPluginIdentifier:self.uniqueID] floatValue];
+	}
+	else
+	{
+		gridOverlay.hidden = YES; // To remove from app windows
+		gridOverlay = nil;
+	}
 }
 
 
@@ -469,7 +464,8 @@
 	{
 		int spacing = stepper.value;
 		[[DMTestSettings sharedInstance] setObject:@(spacing) forKey:kHorizontalSpacing withPluginIdentifier:self.uniqueID];
-		[GridOverlay sharedInstance].horizontalSpacing = spacing;
+		if (gridOverlay)
+			gridOverlay.horizontalSpacing = spacing;
 		NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
 		[self configureCell:cell forIndexPath:indexPath];
 	}
@@ -488,7 +484,8 @@
 	{
 		int spacing = stepper.value;
 		[[DMTestSettings sharedInstance] setObject:@(spacing) forKey:kVerticalSpacing withPluginIdentifier:self.uniqueID];
-		[GridOverlay sharedInstance].verticalSpacing = spacing;
+		if (gridOverlay)
+			gridOverlay.verticalSpacing = spacing;
 		NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
 		[self configureCell:cell forIndexPath:indexPath];
 	}
@@ -507,7 +504,8 @@
 	{
 		int exludeStatusBar = _switch.on;
 		[[DMTestSettings sharedInstance] setObject:@(exludeStatusBar) forKey:kExludeStatusBar withPluginIdentifier:self.uniqueID];
-		[GridOverlay sharedInstance].exludeStatusBar = exludeStatusBar;
+		if (gridOverlay)
+			gridOverlay.exludeStatusBar = exludeStatusBar;
 		NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
 		[self configureCell:cell forIndexPath:indexPath];
 	}
@@ -526,7 +524,8 @@
 	{
 		int lineWidth = stepper.value;
 		[[DMTestSettings sharedInstance] setObject:@(lineWidth) forKey:kLineWidth withPluginIdentifier:self.uniqueID];
-		[GridOverlay sharedInstance].lineWidth = lineWidth;
+		if (gridOverlay)
+			gridOverlay.lineWidth = lineWidth;
 		NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
 		[self configureCell:cell forIndexPath:indexPath];
 	}
@@ -545,7 +544,8 @@
 	{
 		double opacity = stepper.value;
 		[[DMTestSettings sharedInstance] setObject:@(opacity) forKey:kOpacity withPluginIdentifier:self.uniqueID];
-		[GridOverlay sharedInstance].opacity = opacity;
+		if (gridOverlay)
+			gridOverlay.opacity = opacity;
 		NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
 		[self configureCell:cell forIndexPath:indexPath];
 	}
