@@ -54,6 +54,9 @@ See [here](https://github.com/duemunk/iOS-App-Beta-Test-Settings/wiki/Plugins) f
 ### FPS
 Shows current FPS in the statusbar.
 
+### Animation Speed
+Change animation speed (for everything backed by a CALayer). Uses [this](http://ios-blog.co.uk/tutorials/quick-tips/toggle-slow-animations-on-your-ios-device/) trick.
+
 ## Make your own plugins!
 
 Add your own plugins to the test suite. These might be app-specific or not. 

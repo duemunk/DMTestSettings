@@ -322,6 +322,7 @@
 #import "DMGridOverlayPlugin.h"
 #import "DMColorBlindPlugin.h"
 #import "DMFpsPlugin.h"
+#import "DMAnimationSpeedPlugin.h"
 
 @implementation DMTestSettings
 {
@@ -343,6 +344,7 @@
 	[[DMTestSettings sharedInstance] addPlugin:[DMGridOverlayPlugin new]];
 	[[DMTestSettings sharedInstance] addPlugin:[DMColorBlindPlugin new]];
 	[[DMTestSettings sharedInstance] addPlugin:[DMFpsPlugin new]];
+	[[DMTestSettings sharedInstance] addPlugin:[DMAnimationSpeedPlugin new]];
 	for (DMTestSettingsPlugin *plugin in plugins) {
 		[[DMTestSettings sharedInstance] addPlugin:plugin];
 	}

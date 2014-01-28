@@ -1,5 +1,5 @@
 PODS:
-  - DMTestSettings (0.1.0)
+  - DMTestSettings (0.2.0)
 
 DEPENDENCIES:
   - DMTestSettings (from `../DMTestSettings.podspec`)
@@ -9,6 +9,6 @@ EXTERNAL SOURCES:
     :path: ../DMTestSettings.podspec
 
 SPEC CHECKSUMS:
-  DMTestSettings: fce933e07bde0e525fe38e725518038d687b5467
+  DMTestSettings: 5084dd30bfd2922474396fead3c38c2f74f517e8
 
 COCOAPODS: 0.29.0
