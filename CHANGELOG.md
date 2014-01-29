@@ -28,3 +28,6 @@
 ## 0.3.0
 
 - Added plugin for changing animation speed  
+
+## 0.3.1
+- Fixed inconsistent version tagging
