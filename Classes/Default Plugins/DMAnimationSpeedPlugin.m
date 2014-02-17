@@ -21,8 +21,6 @@
 
 @implementation AnimationSpeed
 
-@synthesize speed = _speed;
-
 - (void)setSpeed:(float)speed
 {
 	_speed = speed;

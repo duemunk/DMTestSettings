@@ -305,10 +305,9 @@
 
 
 
-#define cellIdentifier @"CellIdentifier"
+#import "TDMSwitchTableViewCell.h"
 
-
-@interface DMTestSettings () <UITableViewDelegate, UITableViewDataSource>
+@interface DMTestSettings () <UITableViewDelegate, UITableViewDataSource, TDMSwitchTableViewCellDelegate>
 
 @property (nonatomic, strong) NSMutableArray *plugins;
 @property (nonatomic, strong) UINavigationController *navigationController;
@@ -317,14 +316,14 @@
 @end
 
 
-
-
 #import "DMGridOverlayPlugin.h"
 #import "DMColorBlindPlugin.h"
 #import "DMFpsPlugin.h"
 #import "DMAnimationSpeedPlugin.h"
+#define testSettingCellIdentifier @"testSettingCellIdentifier"
+#define testSettingSwitchCellIdentifier @"testSettingSwitchCellIdentifier"
 
-@implementation DMTestSettings
+@implementation DMTestSettings 
 {
 	DMWindow *window;
 }
@@ -423,7 +422,8 @@
 		UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 		tableView.delegate = self;
 		tableView.dataSource = self;
-		[tableView registerClass:[DMTableViewCell_StyleSubtitle class] forCellReuseIdentifier:cellIdentifier];
+		[tableView registerClass:[DMTableViewCell_StyleSubtitle class] forCellReuseIdentifier:testSettingCellIdentifier];
+		tableView.separatorInset = UIEdgeInsetsZero;
 		self.viewController.tableView = tableView;
 
 		self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.viewController];
@@ -538,47 +538,33 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
-	cell.detailTextLabel.textColor = [UIColor grayColor];
-	
 	DMTestSettingsPlugin *plugin = [self pluginForRow:indexPath.row];
 	NSAssert(plugin.name.length > 0, @"Plugin doesn't have name: Class %@",[plugin class]);
-	cell.textLabel.text = plugin.name;
-	cell.detailTextLabel.text = plugin.settingsDescription;
-	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	
-	if ([plugin isKindOfClass:[DMGeneralSettings class]]) {
-		cell.accessoryView = nil;
-		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	
+	UITableViewCell *cell;
+	if ([plugin isKindOfClass:[DMGeneralSettings class]])
+	{
+		cell = [tableView dequeueReusableCellWithIdentifier:testSettingCellIdentifier forIndexPath:indexPath];
 	}
 	else
 	{
-		UISwitch *_switch = [UISwitch new];
-		_switch.on = plugin.isEnabled;
-		[_switch addTarget:self action:@selector(switchEnableChanged:) forControlEvents:UIControlEventValueChanged];
-		cell.accessoryView = _switch;
+		cell = [tableView dequeueReusableCellWithIdentifier:testSettingSwitchCellIdentifier];
+		if (!cell) {
+			cell = [[TDMSwitchTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:testSettingSwitchCellIdentifier];
+		}
+		
+		TDMSwitchTableViewCell *switchCell = (TDMSwitchTableViewCell *)cell;
+		switchCell.on = plugin.isEnabled;
+		switchCell.delegate = self;
 	}
 	
+	cell.textLabel.text = plugin.name;
+	cell.detailTextLabel.text = plugin.settingsDescription;
+	cell.detailTextLabel.textColor = [UIColor grayColor];
+	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	
 	return cell;
-}
-
-#pragma mark -
-
-- (void)switchEnableChanged:(UISwitch *)_switch
-{
-	UITableViewCell *cell;
-	if ([_switch.superview isKindOfClass:[UITableViewCell class]]) {
-		cell = (UITableViewCell *)_switch.superview;
-	}
-	else if ([_switch.superview.superview isKindOfClass:[UITableViewCell class]]) {
-		cell = (UITableViewCell *)_switch.superview.superview;
-	}
-	if (cell)
-	{
-		NSIndexPath *indexPath = [self.viewController.tableView indexPathForCell:cell];
-		[self pluginForRow:indexPath.row].enabled = _switch.on;
-	}
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -589,6 +575,14 @@
 	UIViewController *viewController = plugin.viewController;
 	[self.navigationController pushViewController:viewController animated:YES];
 	viewController.navigationItem.rightBarButtonItem = self.viewController.navigationItem.rightBarButtonItem;
+}
+
+#pragma mark - TDMSwitchTableViewCell
+
+- (void)switchTableViewCell:(TDMSwitchTableViewCell *)cell didChangeState:(BOOL)stateOn
+{
+	NSIndexPath *indexPath = [self.viewController.tableView indexPathForCell:cell];
+	[self pluginForRow:indexPath.row].enabled = stateOn;
 }
 
 @end

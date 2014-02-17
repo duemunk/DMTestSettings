@@ -2,6 +2,7 @@ platform :ios, '7.0'
 
 target "iOS Test Settings Example" do
 	pod "DMTestSettings", :path => "../DMTestSettings.podspec"
+	pod "TDMSwitchTableViewCell", :git => "https://github.com/duemunk/TDMSwitchTableViewCell.git"
 end
 
 target "iOS Test Settings ExampleTests" do

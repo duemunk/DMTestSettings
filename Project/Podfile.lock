@@ -1,14 +1,19 @@
 PODS:
-  - DMTestSettings (0.2.0)
+  - DMTestSettings (0.3.1)
+  - TDMSwitchTableViewCell (0.0.1)
 
 DEPENDENCIES:
   - DMTestSettings (from `../DMTestSettings.podspec`)
+  - TDMSwitchTableViewCell (from `https://github.com/duemunk/TDMSwitchTableViewCell.git`)
 
 EXTERNAL SOURCES:
   DMTestSettings:
     :path: ../DMTestSettings.podspec
+  TDMSwitchTableViewCell:
+    :git: https://github.com/duemunk/TDMSwitchTableViewCell.git
 
 SPEC CHECKSUMS:
-  DMTestSettings: 5084dd30bfd2922474396fead3c38c2f74f517e8
+  DMTestSettings: cc5c7e755e1e7312ed25da2b64aeb92710046f3f
+  TDMSwitchTableViewCell: a8fdff23d192c3a234e469f4c983b335998b70e2
 
 COCOAPODS: 0.29.0
