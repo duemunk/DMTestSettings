@@ -15,8 +15,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '7.0'
 	#s.ios.framework = 'CoreGraphics', 'UIKit'
   s.requires_arc = true
- 
-  s.resources = 'Assets'
 
 	s.public_header_files = 'Classes/*.h'
   s.source_files = 'Classes/*.{h,m}', 'Classes/**/*.{h,m}'
