@@ -4,17 +4,21 @@ DMTestSettings
 
 Easy accesible in-app settings for testing. Shake to show settings-panel.
 
+## Import 
+
+CocoaPods
+```
+pod "TDMSwitchTableViewCell", :git => "https://github.com/duemunk/TDMSwitchTableViewCell.git"
+pod "DMTestSettings", :git => "https://github.com/duemunk/DMTestSettings.git"
+```
+
 ## Use 
 
-### 1. Import to project with wanted plugins – or CocoaPods pod "DMTestSettings"
+### 1. Call at app launch
 
 ```objective-c
 #import "DMTestSettings.h"
-```
 
-### 2. Add to app launch
-
-```objective-c
 - (BOOL)application:didFinishLaunchingWithOptions:
 {
   ...
@@ -29,14 +33,14 @@ Easy accesible in-app settings for testing. Shake to show settings-panel.
 }
 ```
     
-### 3. Shake to show settings panel
+### 2. Shake to show settings panel
 
 ![Settings panel opens on device shake](Screenshots/ExampleApp.png)
 ![Settings panel opens on device shake](Screenshots/SettingsPanel.png)
 
 Or use ⌃⌘Z in iOS Simulator.
 
-### 4. Use the test suite of plugins
+### 3. Use the test suite of plugins
 
 ![Settings panel opens on device shake](Screenshots/Plugin_GridOverlay_On.png)
 ![Settings panel opens on device shake](Screenshots/Plugin_GridOverlay_Settings.png)
