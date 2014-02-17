@@ -1,16 +1,20 @@
 # DMTestSettings CHANGELOG
 
-## 0.1.0
+## 0.3.2
+- Use swipe rows to toggle plugins
 
-- Initial release.
+## 0.3.1
+- Fixed inconsistent version tagging
 
-## 0.1.1
+## 0.3.0
 
-- Fixed detection of shake gesture, when apps have viewcontroller/views that acts as first responders.
+- Added plugin for changing animation speed  
 
-## 0.1.2
+## 0.2.0
 
-- Added option to GridOverlay plugin exclude status bar grid
+- Better handling of showing overlay windows to reduce plugin overhead
+- Less overhead when calling [DMTestSettings start]. Only creates a single UIWindow to catch shake gesture.
+- Settings panel know shows in own UIWindow, to avoid messing with status bar style and to present above alert views, pop-ups etc.
 
 ## 0.1.3
 
@@ -19,15 +23,15 @@
 - Fixed GridOverlay plugin not excluding status bar correctly when rotating device
 - Better presentation of test settings panel on iPad
 
-## 0.2.0
+## 0.1.2
 
-- Better handling of showing overlay windows to reduce plugin overhead
-- Less overhead when calling [DMTestSettings start]. Only creates a single UIWindow to catch shake gesture.
-- Settings panel know shows in own UIWindow, to avoid messing with status bar style and to present above alert views, pop-ups etc.
+- Added option to GridOverlay plugin exclude status bar grid
 
-## 0.3.0
+## 0.1.1
 
-- Added plugin for changing animation speed  
+- Fixed detection of shake gesture, when apps have viewcontroller/views that acts as first responders.
 
-## 0.3.1
-- Fixed inconsistent version tagging
+## 0.1.0
+
+- Initial release.
+
