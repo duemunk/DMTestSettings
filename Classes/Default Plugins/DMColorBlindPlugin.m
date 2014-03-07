@@ -561,11 +561,9 @@ const NSUInteger defaultVisionDefectDimension = 32;
 	CIContext *myContext;
 	CIFilter *visionFilter;
 	UIImage *screenshotColorGraded;
-	UIActivityIndicatorView *activityView;
 	
 	NSOperationQueue *queue;
 }
-@synthesize visionDefectType = _visionDefectType;
 
 - (instancetype)init
 {
@@ -639,8 +637,8 @@ const NSUInteger defaultVisionDefectDimension = 32;
 		screenshotColorGraded = image;
 		[self setNeedsDisplay];
 		
-		if (activityView)
-			[activityView stopAnimating];
+		if (_activityView)
+			[_activityView stopAnimating];
 	}];
 }
 
@@ -648,16 +646,17 @@ const NSUInteger defaultVisionDefectDimension = 32;
 
 - (UIActivityIndicatorView *)activityView
 {
-	if (!activityView) {
-		activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-		activityView.backgroundColor = [UIColor colorWithWhite:0.500 alpha:0.500];
-		[self.rootViewController.view addSubview:activityView];
+	if (!_activityView) {
+		UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+		view.backgroundColor = [UIColor colorWithWhite:0.500 alpha:0.500];
+		[self.rootViewController.view addSubview:view];
 		CGFloat size = 88.f;
-		activityView.frame = CGRectMake(0, 0, size, size);
-		activityView.center = self.rootViewController.view.center;
-		activityView.layer.cornerRadius = size / 2.0;
+		view.frame = CGRectMake(0, 0, size, size);
+		view.center = self.rootViewController.view.center;
+		view.layer.cornerRadius = size / 2.0;
+		_activityView = view;
 	}
-	return activityView;
+	return _activityView;
 }
 
 
