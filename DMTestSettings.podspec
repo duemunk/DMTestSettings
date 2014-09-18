@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "DMTestSettings"
-  s.version      = "0.3.1"
+  s.version      = “0.3.3”
   s.summary      = "Easy accessible in-app settings for testing."
   s.description  = <<-DESC
                    Easy accessible in-app settings for testing. Shake to show settings-panel.
@@ -15,8 +15,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '7.0'
 	#s.ios.framework = 'CoreGraphics', 'UIKit'
   s.requires_arc = true
- 
-  s.resources = 'Assets'
 
 	s.public_header_files = 'Classes/*.h'
   s.source_files = 'Classes/*.{h,m}', 'Classes/**/*.{h,m}'
