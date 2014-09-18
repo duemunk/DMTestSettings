@@ -408,6 +408,11 @@
 
 - (void)setHidden:(BOOL)hidden
 {
+    if (_plugins == nil || _plugins.count == 0) {
+        // Don't show if no plugins
+        return;
+    }
+    
 	_hidden = hidden;
 	
 	if (!window && !hidden)

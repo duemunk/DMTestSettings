@@ -1,5 +1,8 @@
 # DMTestSettings CHANGELOG
 
+## 0.3.3
+- Fixed view showing up even though not initialized
+
 ## 0.3.2
 - Use swipe rows to toggle plugins
 
